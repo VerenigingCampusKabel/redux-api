@@ -18,6 +18,7 @@ const createApi = (config) => {
 
     const api = {
         ...config,
+        name,
         actionTypes: {},
         actions: []
     };
