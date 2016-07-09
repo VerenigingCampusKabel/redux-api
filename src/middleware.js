@@ -18,8 +18,13 @@ const actionWith = async (action, endpoint, ...args) => {
     return action;
 };
 
+// TODO: pass along payload from action to endpoint/defaults properties
+// TODO: allow custom requests (without endpoint) using CALL_API
+// TODO: deal with models (append model name to action types)
+// TODO: bailout / caching
+
 const createApiMiddleware = (config) => {
-    return ({getState}) => {
+    return ({getState, dispatch}) => {
         return (next) => async (action) => {
             // Do not procecss actions without a CALL_API property
             if (!action[CALL_API]) {
@@ -27,24 +32,32 @@ const createApiMiddleware = (config) => {
             }
 
             // Validate endpoint
-            const {endpoint} = action[CALL_API];
-            if (config.actions.indexOf(endpoint) === -1 || !config.endpoints[endpoint]) {
-                next({
+            const {model: modelName, endpoint: endpointName} = action[CALL_API];
+            if (!endpointName || (typeof endpointName === 'string' && !config.endpoints[endpointName])) {
+                next(await actionWith({
                     type: INVALID_REQUEST,
                     error: true,
-                    payload: new RequestError(`Invalid endpoint: ${endpoint}`)
-                });
+                    payload: new RequestError(`Invalid endpoint: ${endpointName}`)
+                }, endpointName, getState(), dispatch));
+            }
+            if (typeof endpointName === 'string' && (!modelName || !config.models[modelName])) {
+                next(await actionWith({
+                    type: INVALID_REQUEST,
+                    error: true,
+                    payload: new RequestError(`Invalid endpoint model (${modelName}) on ${endpointName}`)
+                }, endpointName, getState(), dispatch));
             }
 
-            // Fetch endpoint configuration
-            const endpointConfig = config.endpoints[endpoint];
+            // Fetch endpoint and model configuration
+            const endpoint = typeof endpointName === 'object' ? endpointName : config.endpoints[endpointName];
+            const model = typeof endpointName === 'object' ? null : config.models[modelName];
 
             // Generate the request configuration
             const request = {};
             try {
                 for (const property of VALID_REQUEST_PROPERTIES) {
-                    if (endpointConfig[property]) {
-                        request[property] = endpointConfig[property]();
+                    if (endpoint[property]) {
+                        request[property] = endpoint[property]();
                     } else if (config.defaults[property]) {
                         request[property] = config.defaults[property]();
                     }
@@ -54,13 +67,16 @@ const createApiMiddleware = (config) => {
                 if (request.url.chartAt(0) !== '/') {
                     request.url = '/' + request.url;
                 }
+
+                // Append API and model url prefixes
+                request.url = config.url + '/' + model.url + request.url;
             } catch (err) {
                 // An error occurred when executing an endpoint property function
                 next(await actionWith({
                     type: endpoint.actionTypes.REQUEST,
                     error: true,
                     payload: new InternalError(err.message)
-                }, endpoint, getState()));
+                }, endpoint, getState(), dispatch));
             }
 
             // Dispatch request action type
@@ -71,28 +87,28 @@ const createApiMiddleware = (config) => {
 
             try {
                 // Make the API call
-                const result = await fetch(config.url + request.url, request);
+                const result = await fetch(request.url, request);
 
                 // The server responded with a status code outside the 200-299 range
                 if (!result.ok) {
                     return next(await actionWith({
                         type: endpoint.actionTypes.FAILED,
                         error: true
-                    }, endpoint, getState(), result));
+                    }, endpoint, getState(), dispatch, result));
                 }
 
                 // The request was successful
                 return next(await actionWith({
                     type: endpoint.actionTypes.SUCCESS,
                     error: false
-                }, endpoint, getState(), result));
+                }, endpoint, getState(), dispatch, result));
             } catch (err) {
                 // The request was invalid or a network error occurred
                 return next(await actionWith({
                     type: endpoint.actionTypes.FAILED,
                     error: true,
                     payload: new RequestError(err.message)
-                }, endpoint, getState()));
+                }, endpoint, getState(), dispatch));
             }
         };
     };

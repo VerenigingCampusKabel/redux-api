@@ -9,7 +9,7 @@ const VALID_CREDENTIALS = ['omit', 'same-origin', 'include'];
 const VALID_CACHE = ['default', 'no-store', 'reload', 'no-cache', 'force-cache', 'only-if-cached'];
 const VALID_REDIRECT = ['follow', 'error', 'manual'];
 
-export const validateEnpoint = (endpointName, endpoint) => {
+export const validateEnpoint = (endpointName, endpoint, isDefaults = false) => {
     for (const property of Object.keys(endpoint)) {
         if (VALID_REQUEST_PROPERTIES.indexOf(property) === -1 && VALID_RESPONSE_PROPERTIES.indexOf(property) === -1) {
             throw new InvalidConfigError(`Invalid endpoint property (${property}) on ${endpointName}`);
@@ -21,13 +21,15 @@ export const validateEnpoint = (endpointName, endpoint) => {
         }
     }
 
-    // Validate url
-    if (!endpoint.url) {
-        throw new InvalidConfigError(`Missing endpoint url on ${endpointName}`);
-    }
+    if (!isDefaults) {
+        // Validate url
+        if (!endpoint.url) {
+            throw new InvalidConfigError(`Missing endpoint url on ${endpointName}`);
+        }
 
-    if (!endpoint.payload) {
-        endpoint.payload = getJSON;
+        if (!endpoint.payload) {
+            endpoint.payload = getJSON;
+        }
     }
 
     // if (Object.keys(other) !== 0) {
