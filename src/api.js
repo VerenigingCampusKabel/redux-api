@@ -2,7 +2,7 @@ import {InvalidConfigError} from './errors';
 import {camelCaseToUpperUnderscore} from './util';
 import {validateEnpoint} from './validation';
 
-const ACTION_STATES = ['STARTED', 'SUCCESS', 'FAILED'];
+const ACTION_STATES = ['REQUEST', 'SUCCESS', 'FAILED'];
 
 const createApi = (config) => {
     // Validate API name
@@ -44,10 +44,15 @@ const createApi = (config) => {
         // Validate endpoint configuration
         validateEnpoint(endpointName, endpoint);
 
+        endpoint.actionTypes = {};
+
         // Create endpoint action types
         const actionType = camelCaseToUpperUnderscore(endpointName);
         for (const state of ACTION_STATES) {
-            api.actionTypes[actionType + '_' + state] = Symbol(name + '_' + endpointName + '_' + state);
+            const symbol = Symbol(name + '_' + endpointName + '_' + state);
+
+            api.actionTypes[actionType + '_' + state] = symbol;
+            endpoint.actionTypes[state] = symbol;
         }
         api.actions.push(endpointName);
     }

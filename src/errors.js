@@ -9,18 +9,18 @@ export class InvalidConfigError extends Error {
     }
 };
 
-export class InternalError extends Error {
-    constructor(message) {
-        super();
-        this.name = 'InternalError';
-        this.message = message;
-    }
-}
-
 export class RequestError extends Error {
     constructor(message) {
         super();
         this.name = 'RequestError';
+        this.message = message;
+    }
+}
+
+export class InternalError extends Error {
+    constructor(message) {
+        super();
+        this.name = 'InternalError';
         this.message = message;
     }
 }
