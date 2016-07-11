@@ -1,3 +1,4 @@
+import {createApiAction} from './actions';
 import {InvalidConfigError} from './errors';
 import {camelCaseToUpperUnderscore, capatalize} from './util';
 import {validateEnpoint} from './validation';
@@ -47,6 +48,9 @@ const createApi = (config) => {
         // Validate endpoint configuration
         validateEnpoint(endpointName, endpoint);
 
+        // Set endpoint name
+        endpoint.name = endpointName;
+
         // Create endpoint action types
         endpoint.actionTypes = {};
         const actionType = camelCaseToUpperUnderscore(endpointName);
@@ -75,15 +79,32 @@ const createApi = (config) => {
 
         // Generate model endpoints
         for (const [endpointName, endpoint] of Object.entries(config.endpoints)) {
+            model.actionTypes[endpointName] = {};
             for (const [state, type] of Object.entries(endpoint.actionTypes)) {
                 const symbol = Symbol(api.name + '_' + modelName + '_' + type);
-                model.actionTypes[state] = symbol;
+                model.actionTypes[endpointName][state] = symbol;
                 api.actionTypes[modelName + '_' + type] = symbol;
             }
 
-            const action = createApiAction(model, endpointName, endpoint);
+            const action = createApiAction(modelName, endpointName);
             model.actions[endpointName] = action;
             api.actions[endpointName + capatalize(modelName)] = action;
+        }
+    }
+
+    // Validate and parse custom endpoints
+    for (const [endpointName, endpoint] of Object.entries(config.customEndpoints)) {
+        // Validate endpoint configuration
+        validateEnpoint(endpointName, endpoint);
+
+        // Set endpoint name
+        endpoint.name = endpointName;
+
+        // Create endpoint action types
+        endpoint.actionTypes = {};
+        const actionType = camelCaseToUpperUnderscore(endpointName);
+        for (const state of ACTION_STATES) {
+            endpoint.actionTypes[state] = actionType + '_' + state;
         }
     }
 

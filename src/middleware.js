@@ -18,9 +18,6 @@ const actionWith = async (action, endpoint, ...args) => {
     return action;
 };
 
-// TODO: pass along payload from action to endpoint/defaults properties
-// TODO: allow custom requests (without endpoint) using CALL_API
-// TODO: deal with models (append model name to action types)
 // TODO: bailout / caching
 
 const createApiMiddleware = (config) => {
@@ -32,7 +29,7 @@ const createApiMiddleware = (config) => {
             }
 
             // Validate endpoint
-            const {model: modelName, endpoint: endpointName} = action[CALL_API];
+            const {model: modelName, endpoint: endpointName, payload} = action[CALL_API];
             if (!endpointName || (typeof endpointName === 'string' && !config.endpoints[endpointName])) {
                 next(await actionWith({
                     type: INVALID_REQUEST,
@@ -57,9 +54,9 @@ const createApiMiddleware = (config) => {
             try {
                 for (const property of VALID_REQUEST_PROPERTIES) {
                     if (endpoint[property]) {
-                        request[property] = endpoint[property]();
+                        request[property] = endpoint[property](payload);
                     } else if (config.defaults[property]) {
-                        request[property] = config.defaults[property]();
+                        request[property] = config.defaults[property](payload);
                     }
                 }
 
@@ -69,11 +66,11 @@ const createApiMiddleware = (config) => {
                 }
 
                 // Append API and model url prefixes
-                request.url = config.url + '/' + model.url + request.url;
+                request.url = config.url + (model ? '/' + model.url : '') + request.url;
             } catch (err) {
                 // An error occurred when executing an endpoint property function
                 next(await actionWith({
-                    type: endpoint.actionTypes.REQUEST,
+                    type: model ? model.actionTypes[endpointName].REQUEST : endpoint.actionTypes.REQUEST,
                     error: true,
                     payload: new InternalError(err.message)
                 }, endpoint, getState(), dispatch));
@@ -81,9 +78,9 @@ const createApiMiddleware = (config) => {
 
             // Dispatch request action type
             next(await actionWith({
-                type: endpoint.actionTypes.REQUEST,
+                type: model ? model.actionTypes[endpointName].REQUEST : endpoint.actionTypes.REQUEST,
                 error: false
-            }, endpoint, getState()));
+            }, endpoint, getState(), dispatch));
 
             try {
                 // Make the API call
@@ -92,20 +89,20 @@ const createApiMiddleware = (config) => {
                 // The server responded with a status code outside the 200-299 range
                 if (!result.ok) {
                     return next(await actionWith({
-                        type: endpoint.actionTypes.FAILED,
+                        type: model ? model.actionTypes[endpointName].FAILED : endpoint.actionTypes.FAILED,
                         error: true
                     }, endpoint, getState(), dispatch, result));
                 }
 
                 // The request was successful
                 return next(await actionWith({
-                    type: endpoint.actionTypes.SUCCESS,
+                    type: model ? model.actionTypes[endpointName].SUCCESS : endpoint.actionTypes.SUCCESS,
                     error: false
                 }, endpoint, getState(), dispatch, result));
             } catch (err) {
                 // The request was invalid or a network error occurred
                 return next(await actionWith({
-                    type: endpoint.actionTypes.FAILED,
+                    type: model.actionTypes[endpointName].FAILED,
                     error: true,
                     payload: new RequestError(err.message)
                 }, endpoint, getState(), dispatch));
