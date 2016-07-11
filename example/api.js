@@ -1,7 +1,7 @@
 import {createApi} from 'redux-cached-api';
 
 export default createApi({
-    name: '',
+    name: 'EXAMPLE_API',
     url: 'http://myvckbackend.danielhuisman.io',
     models: [
         'user',
