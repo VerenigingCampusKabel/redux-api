@@ -10,12 +10,10 @@ export const createApiAction = (modelName, endpointName) => {
     });
 };
 
-const createApiActions = (api) => {
+export const createApiActions = (api) => {
     const models = {};
     for (const [modelName, model] of Object.entries(api.models)) {
         models[modelName] = model.actions;
     }
     return models;
 };
-
-export default createApiActions;

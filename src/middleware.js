@@ -20,7 +20,7 @@ const actionWith = async (action, endpoint, ...args) => {
 
 // TODO: bailout / caching
 
-const createApiMiddleware = (config) => {
+export const createApiMiddleware = (config) => {
     return ({getState, dispatch}) => {
         return (next) => async (action) => {
             // Do not procecss actions without a CALL_API property
@@ -110,5 +110,3 @@ const createApiMiddleware = (config) => {
         };
     };
 };
-
-export default createApiMiddleware;

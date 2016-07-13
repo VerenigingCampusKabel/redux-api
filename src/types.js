@@ -3,7 +3,7 @@ import {InvalidConfigError} from './errors';
 export const CALL_API = Symbol('CALL_API');
 export const INVALID_REQUEST = Symbol('INVALID_REQUEST');
 
-const createApiActionTypes = (...apis) => {
+export const createApiActionTypes = (...apis) => {
     const appendName = apis.length > 1;
     const types = {};
     for (const api of apis) {
@@ -18,5 +18,3 @@ const createApiActionTypes = (...apis) => {
     }
     return types;
 };
-
-export default createApiActionTypes;

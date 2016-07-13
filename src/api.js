@@ -5,7 +5,7 @@ import {validateEnpoint} from './validation';
 
 const ACTION_STATES = ['REQUEST', 'SUCCESS', 'FAILED'];
 
-const createApi = (config) => {
+export const createApi = (config) => {
     // Validate API name
     if (typeof config.name === 'string') {
         throw new InvalidConfigError('Invalid API name: ' + config.name);
@@ -110,5 +110,3 @@ const createApi = (config) => {
 
     return api;
 };
-
-export default createApi;

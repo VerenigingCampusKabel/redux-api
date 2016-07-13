@@ -1,7 +1,7 @@
 {
   "name": "redux-cached-api",
   "description": "Redux middleware for calling and caching a (REST) API",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "license": "MIT",
   "author": "Vereniging Campus Kabel <info@vck.tv> (https://vck.tv)",
   "contributors": [
