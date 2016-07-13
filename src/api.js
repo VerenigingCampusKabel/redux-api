@@ -7,7 +7,7 @@ const ACTION_STATES = ['REQUEST', 'SUCCESS', 'FAILED'];
 
 export const createApi = (config) => {
     // Validate API name
-    if (typeof config.name === 'string') {
+    if (typeof config.name !== 'string') {
         throw new InvalidConfigError('Invalid API name: ' + config.name);
     }
     let name = config.name ? config.name : 'API';
@@ -19,7 +19,7 @@ export const createApi = (config) => {
     if (!config.url) {
         throw new InvalidConfigError('Missing API base url');
     }
-    if (typeof config.url === 'string') {
+    if (typeof config.url !== 'string') {
         throw new InvalidConfigError(`Invalid API base url: ${config.url}`);
     }
     let url = config.url.trim();
@@ -69,7 +69,7 @@ export const createApi = (config) => {
         actions: []
     };
 
-    for (const modelName of api.models) {
+    for (const modelName of config.models) {
         // Generate model object
         const model = {
             actionTypes: {},
@@ -93,18 +93,20 @@ export const createApi = (config) => {
     }
 
     // Validate and parse custom endpoints
-    for (const [endpointName, endpoint] of Object.entries(config.customEndpoints)) {
-        // Validate endpoint configuration
-        validateEnpoint(endpointName, endpoint);
+    if (config.customEndpoints) {
+        for (const [endpointName, endpoint] of Object.entries(config.customEndpoints)) {
+            // Validate endpoint configuration
+            validateEnpoint(endpointName, endpoint);
 
-        // Set endpoint name
-        endpoint.name = endpointName;
+            // Set endpoint name
+            endpoint.name = endpointName;
 
-        // Create endpoint action types
-        endpoint.actionTypes = {};
-        const actionType = camelCaseToUpperUnderscore(endpointName);
-        for (const state of ACTION_STATES) {
-            endpoint.actionTypes[state] = actionType + '_' + state;
+            // Create endpoint action types
+            endpoint.actionTypes = {};
+            const actionType = camelCaseToUpperUnderscore(endpointName);
+            for (const state of ACTION_STATES) {
+                endpoint.actionTypes[state] = actionType + '_' + state;
+            }
         }
     }
 

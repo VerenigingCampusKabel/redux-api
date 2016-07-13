@@ -1,4 +1,4 @@
-import {createApi} from 'redux-cached-api';
+import {createApi} from '../lib';
 
 export default createApi({
     name: 'EXAMPLE_API',

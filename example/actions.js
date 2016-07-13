@@ -1,4 +1,4 @@
-import {createApiActions} from 'redux-cached-api';
+import {createApiActions} from '../lib';
 
 import api from './api';
 

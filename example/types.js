@@ -1,5 +1,5 @@
-import {createApiActionTypes} from 'redux-cached-api';
+import {createApiActionTypes} from '../lib';
 
-import {api} from './api';
+import api from './api';
 
 export default createApiActionTypes(api);
