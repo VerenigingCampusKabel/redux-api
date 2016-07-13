@@ -12,7 +12,8 @@ export const validateEnpoint = (endpointName, endpoint, isDefaults = false) => {
 
         // Normalize properties
         if (typeof endpoint[property] !== 'function') {
-            endpoint[property] = () => endpoint[property];
+            const value = endpoint[property];
+            endpoint[property] = () => value;
         }
     }
 

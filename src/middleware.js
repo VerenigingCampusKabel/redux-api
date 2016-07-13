@@ -6,7 +6,7 @@ import {VALID_REQUEST_PROPERTIES} from './validation';
 
 const actionWith = async (action, endpoint, ...args) => {
     // Only execute payload function on response action types
-    if (!action.payload) {
+    if (action.payload && !(action.payload instanceof Error)) {
         try {
             action.payload = await endpoint.payload(...args);
         } catch (err) {
@@ -31,14 +31,14 @@ export const createApiMiddleware = (config) => {
             // Validate endpoint
             const {model: modelName, endpoint: endpointName, payload} = action[CALL_API];
             if (!endpointName || (typeof endpointName === 'string' && !config.endpoints[endpointName])) {
-                next(await actionWith({
+                return next(await actionWith({
                     type: INVALID_REQUEST,
                     error: true,
                     payload: new RequestError(`Invalid endpoint: ${endpointName}`)
                 }, endpointName, getState(), dispatch));
             }
             if (typeof endpointName === 'string' && (!modelName || !config.models[modelName])) {
-                next(await actionWith({
+                return next(await actionWith({
                     type: INVALID_REQUEST,
                     error: true,
                     payload: new RequestError(`Invalid endpoint model (${modelName}) on ${endpointName}`)
@@ -61,18 +61,18 @@ export const createApiMiddleware = (config) => {
                 }
 
                 // Normalize url
-                if (request.url.chartAt(0) !== '/') {
+                if (request.url.charAt(0) !== '/') {
                     request.url = '/' + request.url;
                 }
 
                 // Append API and model url prefixes
                 request.url = config.url + (model ? '/' + model.url : '') + request.url;
             } catch (err) {
-                // An error occurred when executing an endpoint property function
-                next(await actionWith({
+                 // An error occurred when executing an endpoint property function
+                return next(await actionWith({
                     type: model ? model.actionTypes[endpointName].REQUEST : endpoint.actionTypes.REQUEST,
                     error: true,
-                    payload: new InternalError(err.message)
+                    payload: new InternalError(err)
                 }, endpoint, getState(), dispatch));
             }
 
@@ -83,6 +83,11 @@ export const createApiMiddleware = (config) => {
             }, endpoint, getState(), dispatch));
 
             try {
+                // Strip the last slash if configured
+                if (config.stripSlash && request.url.charAt(request.url.length - 1) === '/') {
+                    request.url = request.url.substring(0, request.url.length - 1);
+                }
+
                 // Make the API call
                 const result = await fetch(request.url, request);
 
@@ -104,7 +109,7 @@ export const createApiMiddleware = (config) => {
                 return next(await actionWith({
                     type: model.actionTypes[endpointName].FAILED,
                     error: true,
-                    payload: new RequestError(err.message)
+                    payload: new RequestError(err)
                 }, endpoint, getState(), dispatch));
             }
         };

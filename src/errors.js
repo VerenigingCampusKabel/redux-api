@@ -10,17 +10,27 @@ export class InvalidConfigError extends Error {
 };
 
 export class RequestError extends Error {
-    constructor(message) {
+    constructor(err) {
         super();
         this.name = 'RequestError';
-        this.message = message;
+        if (err instanceof Error) {
+            this.message = err.message;
+            this.originalError = err;
+        } else {
+            this.message = err;
+        }
     }
 }
 
 export class InternalError extends Error {
-    constructor(message) {
+    constructor(err) {
         super();
         this.name = 'InternalError';
-        this.message = message;
+        if (err instanceof Error) {
+            this.message = err.message;
+            this.originalError = err;
+        } else {
+            this.message = err;
+        }
     }
 }

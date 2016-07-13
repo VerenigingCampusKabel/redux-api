@@ -72,6 +72,7 @@ export const createApi = (config) => {
     for (const modelName of config.models) {
         // Generate model object
         const model = {
+            url: modelName,
             actionTypes: {},
             actions: {}
         };
@@ -81,9 +82,10 @@ export const createApi = (config) => {
         for (const [endpointName, endpoint] of Object.entries(config.endpoints)) {
             model.actionTypes[endpointName] = {};
             for (const [state, type] of Object.entries(endpoint.actionTypes)) {
-                const symbol = Symbol(api.name + '_' + modelName + '_' + type);
+                const upperModelName = camelCaseToUpperUnderscore(modelName);
+                const symbol = Symbol(api.name + '_' + upperModelName + '_' + type);
                 model.actionTypes[endpointName][state] = symbol;
-                api.actionTypes[modelName + '_' + type] = symbol;
+                api.actionTypes[upperModelName + '_' + type] = symbol;
             }
 
             const action = createApiAction(modelName, endpointName);

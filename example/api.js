@@ -3,6 +3,7 @@ import {createApi} from '../lib';
 export default createApi({
     name: 'EXAMPLE_API',
     url: 'http://api.example.com/api/v1',
+    stripSlash: true,
     models: [
         'user',
         'device'

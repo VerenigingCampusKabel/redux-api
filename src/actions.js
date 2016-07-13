@@ -4,7 +4,7 @@ export const createApiAction = (modelName, endpointName) => {
     return (payload) => ({
         [CALL_API]: {
             model: modelName,
-            endpint: endpointName,
+            endpoint: endpointName,
             payload: payload
         }
     });

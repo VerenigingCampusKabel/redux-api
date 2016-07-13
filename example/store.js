@@ -1,13 +1,18 @@
-import {browserHistory} from 'react-router';
+import util from 'util';
+
 import {createStore, applyMiddleware} from 'redux';
-import {routerMiddleware} from 'react-router-redux';
 import {createApiMiddleware} from '../lib';
 
 import api from './api';
 import rootReducer from './reducers';
 
+console.log(util.inspect(api, false, null));
+
 const middleware = applyMiddleware(
-    routerMiddleware(browserHistory),
+    ({getState, dispatch}) => (next) => async (action) => {
+        console.log('action', util.inspect(action, true, null));
+        next(action);
+    },
     createApiMiddleware(api)
 );
 
