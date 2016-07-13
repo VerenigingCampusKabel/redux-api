@@ -19,7 +19,7 @@ export const getJSON = async (state, dispatch, response) => {
 
     const contentType = response.headers.get('Content-Type');
 
-    if (HTTP_STATUS_EMPTY.indexOf(response.status) !== -1 || !contentType || contentType.index('json') === -1) {
+    if (HTTP_STATUS_EMPTY.indexOf(response.status) !== -1 || !contentType || contentType.indexOf('json') === -1) {
         return null;
     }
 

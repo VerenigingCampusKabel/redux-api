@@ -95,14 +95,16 @@ export const createApiMiddleware = (config) => {
                 if (!result.ok) {
                     return next(await actionWith({
                         type: model ? model.actionTypes[endpointName].FAILED : endpoint.actionTypes.FAILED,
-                        error: true
+                        error: true,
+                        payload: {}
                     }, endpoint, getState(), dispatch, result));
                 }
 
                 // The request was successful
                 return next(await actionWith({
                     type: model ? model.actionTypes[endpointName].SUCCESS : endpoint.actionTypes.SUCCESS,
-                    error: false
+                    error: false,
+                    payload: {}
                 }, endpoint, getState(), dispatch, result));
             } catch (err) {
                 // The request was invalid or a network error occurred
