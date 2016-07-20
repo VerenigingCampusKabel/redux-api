@@ -18,7 +18,8 @@ const actionWith = async (action, endpoint, ...args) => {
     return action;
 };
 
-// TODO: bailout / caching
+// TODO: pagination
+// TODO: caching
 
 export const createApiMiddleware = (config) => {
     return ({getState, dispatch}) => {
@@ -67,6 +68,17 @@ export const createApiMiddleware = (config) => {
 
                 // Append API and model url prefixes
                 request.url = config.url + (model ? '/' + model.url : '') + request.url;
+
+                // Check if the request should be canceled
+                if (endpoint.bailout) {
+                    if (await endpoint.bailout(getState(), dispatch, request)) {
+                        return;
+                    }
+                } else if (config.defaults.bailout) {
+                    if (await config.defaults.bailout(getState(), dispatch, request)) {
+                        return;
+                    }
+                }
             } catch (err) {
                  // An error occurred when executing an endpoint property function
                 return next(await actionWith({
