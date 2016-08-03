@@ -91,7 +91,7 @@ export const createApi = (config) => {
                 const symbol = Symbol(api.name + '_' + upperModelName + '_' + type);
                 model.actionTypes[endpointName][state] = symbol;
                 api.actionTypes.all[upperModelName + '_' + type] = symbol;
-                api.actionTypes[type.toLowerCase()].push(symbol);
+                api.actionTypes[state.toLowerCase()].push(symbol);
             }
 
             const action = createApiAction(modelName, endpointName);
