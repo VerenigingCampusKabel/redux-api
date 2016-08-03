@@ -67,9 +67,9 @@ export const createApi = (config) => {
         models: {},
         actionTypes: {
             all: {},
-            request: {},
-            success: {},
-            failed: {}
+            request: [],
+            success: [],
+            failed: []
         },
         actions: []
     };
