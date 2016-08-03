@@ -84,6 +84,8 @@ export const createApiMiddleware = (config) => {
                 return next(await actionWith({
                     type: model ? model.actionTypes[endpointName].REQUEST : endpoint.actionTypes.REQUEST,
                     error: true,
+                    model: model ? modelName : undefined,
+                    endpoint: endpointName,
                     payload: new InternalError(err)
                 }, endpoint, getState(), dispatch));
             }
@@ -108,6 +110,8 @@ export const createApiMiddleware = (config) => {
                     return next(await actionWith({
                         type: model ? model.actionTypes[endpointName].FAILED : endpoint.actionTypes.FAILED,
                         error: true,
+                        model: model ? modelName : undefined,
+                        endpoint: endpointName,
                         payload: {}
                     }, endpoint, getState(), dispatch, result));
                 }
@@ -116,6 +120,8 @@ export const createApiMiddleware = (config) => {
                 return next(await actionWith({
                     type: model ? model.actionTypes[endpointName].SUCCESS : endpoint.actionTypes.SUCCESS,
                     error: false,
+                    model: model ? modelName : undefined,
+                    endpoint: endpointName,
                     payload: {}
                 }, endpoint, getState(), dispatch, result));
             } catch (err) {
@@ -123,6 +129,8 @@ export const createApiMiddleware = (config) => {
                 return next(await actionWith({
                     type: model.actionTypes[endpointName].FAILED,
                     error: true,
+                    model: model ? modelName : undefined,
+                    endpoint: endpointName,
                     payload: new RequestError(err)
                 }, endpoint, getState(), dispatch));
             }
