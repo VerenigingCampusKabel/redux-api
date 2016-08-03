@@ -65,7 +65,12 @@ export const createApi = (config) => {
         name,
         url,
         models: {},
-        actionTypes: {},
+        actionTypes: {
+            all: {},
+            request: {},
+            success: {},
+            failed: {}
+        },
         actions: []
     };
 
@@ -85,7 +90,8 @@ export const createApi = (config) => {
                 const upperModelName = camelCaseToUpperUnderscore(modelName);
                 const symbol = Symbol(api.name + '_' + upperModelName + '_' + type);
                 model.actionTypes[endpointName][state] = symbol;
-                api.actionTypes[upperModelName + '_' + type] = symbol;
+                api.actionTypes.all[upperModelName + '_' + type] = symbol;
+                api.actionTypes[type.toLowerCase()].push(symbol);
             }
 
             const action = createApiAction(modelName, endpointName);

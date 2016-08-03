@@ -30,7 +30,7 @@ export const createApiMiddleware = (config) => {
             }
 
             // Validate endpoint
-            const {model: modelName, endpoint: endpointName, payload} = action[CALL_API];
+            const {model: modelName, endpoint: endpointName, payload, options} = action[CALL_API];
             if (!endpointName || (typeof endpointName === 'string' && !config.endpoints[endpointName])) {
                 return next(await actionWith({
                     type: INVALID_REQUEST,
@@ -55,9 +55,9 @@ export const createApiMiddleware = (config) => {
             try {
                 for (const property of VALID_REQUEST_PROPERTIES) {
                     if (endpoint[property]) {
-                        request[property] = endpoint[property](payload);
+                        request[property] = endpoint[property](payload, options);
                     } else if (config.defaults[property]) {
-                        request[property] = config.defaults[property](payload);
+                        request[property] = config.defaults[property](payload, options);
                     }
                 }
 
