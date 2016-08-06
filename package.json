@@ -1,7 +1,7 @@
 {
   "name": "redux-cached-api",
   "description": "Redux middleware for calling and caching a (REST) API",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "license": "MIT",
   "author": "Vereniging Campus Kabel <info@vck.tv> (https://vck.tv)",
   "contributors": [
@@ -10,8 +10,8 @@
   "repository": "github:VerenigingCampusKabel/redux-cached-api",
   "homepage": "https://github.com/VerenigingCampusKabel/redux-cached-api",
   "bugs": {
-      "url": "https://github.com/VerenigingCampusKabel/redux-cached-api/issues",
-      "email": "info@vck.tv"
+    "url": "https://github.com/VerenigingCampusKabel/redux-cached-api/issues",
+    "email": "info@vck.tv"
   },
   "keywords": [
     "redux",
@@ -36,7 +36,8 @@
   },
   "dependencies": {
     "babel-runtime": "^6.9.2",
-    "isomorphic-fetch": "^2.2.1"
+    "isomorphic-fetch": "^2.2.1",
+    "qs": "^6.2.1"
   },
   "devDependencies": {
     "babel-cli": "^6.7.5",

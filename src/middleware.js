@@ -1,3 +1,4 @@
+import qs from 'qs';
 import fetch from 'isomorphic-fetch';
 
 import {RequestError, InternalError} from './errors';
@@ -18,6 +19,7 @@ const actionWith = async (action, endpoint, ...args) => {
     return action;
 };
 
+// TODO: generate request ID
 // TODO: pagination
 // TODO: caching
 
@@ -30,7 +32,7 @@ export const createApiMiddleware = (config) => {
             }
 
             // Validate endpoint
-            const {model: modelName, endpoint: endpointName, payload, options} = action[CALL_API];
+            const {model: modelName, endpoint: endpointName, payload} = action[CALL_API];
             if (!endpointName || (typeof endpointName === 'string' && !config.endpoints[endpointName])) {
                 return next(await actionWith({
                     type: INVALID_REQUEST,
@@ -55,9 +57,9 @@ export const createApiMiddleware = (config) => {
             try {
                 for (const property of VALID_REQUEST_PROPERTIES) {
                     if (endpoint[property]) {
-                        request[property] = endpoint[property](payload, options);
+                        request[property] = endpoint[property](payload);
                     } else if (config.defaults[property]) {
-                        request[property] = config.defaults[property](payload, options);
+                        request[property] = config.defaults[property](payload);
                     }
                 }
 
@@ -68,6 +70,15 @@ export const createApiMiddleware = (config) => {
 
                 // Append API and model url prefixes
                 request.url = config.url + (model ? '/' + model.url : '') + request.url;
+
+                // Parse query string
+                if (request.query) {
+                    if (typeof request.query === 'object') {
+                        request.query = qs.stringify(request.query);
+                    } else {
+                        request.query = request.query.toString();
+                    }
+                }
 
                 // Check if the request should be canceled
                 if (endpoint.bailout) {
@@ -103,7 +114,7 @@ export const createApiMiddleware = (config) => {
                 }
 
                 // Make the API call
-                const result = await fetch(request.url, request);
+                const result = await fetch(request.url + '?' + request.query, request);
 
                 // The server responded with a status code outside the 200-299 range
                 if (!result.ok) {

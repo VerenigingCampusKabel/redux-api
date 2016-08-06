@@ -1,12 +1,11 @@
 import {CALL_API} from './types';
 
 export const createApiAction = (modelName, endpointName) => {
-    return (payload, options) => ({
+    return (payload) => ({
         [CALL_API]: {
             model: modelName,
             endpoint: endpointName,
-            payload: payload,
-            options: options
+            payload: payload
         }
     });
 };
