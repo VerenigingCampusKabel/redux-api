@@ -127,7 +127,7 @@ export const createApiMiddleware = (config) => {
                 }
 
                 // Make the API call
-                const result = await fetch(request.url + '?' + request.query, request);
+                const result = await fetch(request.url + '?' + (request.query ? request.query : ''), request);
 
                 // The server responded with a status code outside the 200-299 range
                 if (!result.ok) {
