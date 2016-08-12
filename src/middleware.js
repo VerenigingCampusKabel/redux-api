@@ -31,8 +31,16 @@ export const createApiMiddleware = (config) => {
                 return next(action);
             }
 
+            // Read out action information
+            const {model: modelName, payload} = action[CALL_API];
+            let {endpoint: endpointName} = action[CALL_API];
+
+            // Check if it's a custom endpoint
+            if (endpointName && !config.endpoints[endpointName] && config.customEndpoints[endpointName]) {
+                endpointName = config.customEndpoints[endpointName];
+            }
+
             // Validate endpoint
-            const {model: modelName, endpoint: endpointName, payload} = action[CALL_API];
             if (!endpointName || (typeof endpointName === 'string' && !config.endpoints[endpointName])) {
                 return next(await actionWith({
                     type: INVALID_REQUEST,
