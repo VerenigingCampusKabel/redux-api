@@ -91,6 +91,11 @@ export const createApiMiddleware = (config) => {
                     }
                 }
 
+                // Parse headers
+                if (request.headers) {
+                    request.headers = new Headers(request.headers);
+                }
+
                 // Check if the request should be canceled
                 if (endpoint.bailout) {
                     if (await endpoint.bailout(getState(), dispatch, request)) {
