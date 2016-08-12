@@ -4,6 +4,7 @@ import fetch from 'isomorphic-fetch';
 import {RequestError, InternalError} from './errors';
 import {CALL_API, INVALID_REQUEST} from './types';
 import {VALID_REQUEST_PROPERTIES} from './validation';
+import {generateUUID} from './util';
 
 const actionWith = async (action, endpoint, ...args) => {
     // Only execute payload function on response action types
@@ -19,7 +20,6 @@ const actionWith = async (action, endpoint, ...args) => {
     return action;
 };
 
-// TODO: generate request ID
 // TODO: pagination
 // TODO: caching
 
@@ -51,6 +51,9 @@ export const createApiMiddleware = (config) => {
             // Fetch endpoint and model configuration
             const endpoint = typeof endpointName === 'object' ? endpointName : config.endpoints[endpointName];
             const model = typeof endpointName === 'object' ? null : config.models[modelName];
+
+            // Generate random version 4 UUID based on timestamp
+            const requestId = generateUUID();
 
             // Generate the request configuration
             const request = {};
@@ -94,6 +97,7 @@ export const createApiMiddleware = (config) => {
                  // An error occurred when executing an endpoint property function
                 return next(await actionWith({
                     type: model ? model.actionTypes[endpointName].REQUEST : endpoint.actionTypes.REQUEST,
+                    requestId: requestId,
                     error: true,
                     model: model ? modelName : undefined,
                     endpoint: endpointName,
@@ -104,6 +108,7 @@ export const createApiMiddleware = (config) => {
             // Dispatch request action type
             next(await actionWith({
                 type: model ? model.actionTypes[endpointName].REQUEST : endpoint.actionTypes.REQUEST,
+                requestId: requestId,
                 error: false
             }, endpoint, getState(), dispatch));
 
@@ -120,6 +125,7 @@ export const createApiMiddleware = (config) => {
                 if (!result.ok) {
                     return next(await actionWith({
                         type: model ? model.actionTypes[endpointName].FAILED : endpoint.actionTypes.FAILED,
+                        requestId: requestId,
                         error: true,
                         model: model ? modelName : undefined,
                         endpoint: endpointName,
@@ -130,6 +136,7 @@ export const createApiMiddleware = (config) => {
                 // The request was successful
                 return next(await actionWith({
                     type: model ? model.actionTypes[endpointName].SUCCESS : endpoint.actionTypes.SUCCESS,
+                    requestId: requestId,
                     error: false,
                     model: model ? modelName : undefined,
                     endpoint: endpointName,
@@ -139,6 +146,7 @@ export const createApiMiddleware = (config) => {
                 // The request was invalid or a network error occurred
                 return next(await actionWith({
                     type: model.actionTypes[endpointName].FAILED,
+                    requestId: requestId,
                     error: true,
                     model: model ? modelName : undefined,
                     endpoint: endpointName,
