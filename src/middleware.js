@@ -91,11 +91,6 @@ export const createApiMiddleware = (config) => {
                     }
                 }
 
-                // Parse headers
-                if (request.headers) {
-                    request.headers = new Headers(request.headers);
-                }
-
                 // Check if the request should be canceled
                 if (endpoint.bailout) {
                     if (await endpoint.bailout(getState(), dispatch, request)) {
@@ -132,7 +127,7 @@ export const createApiMiddleware = (config) => {
                 }
 
                 // Make the API call
-                const result = await fetch(request.url + '?' + (request.query ? request.query : ''), request);
+                const result = await fetch(request.url + (request.query ? '?' + request.query : ''), request);
 
                 // The server responded with a status code outside the 200-299 range
                 if (!result.ok) {
