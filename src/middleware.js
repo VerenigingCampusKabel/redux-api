@@ -158,7 +158,7 @@ export const createApiMiddleware = (config) => {
             } catch (err) {
                 // The request was invalid or a network error occurred
                 return next(await actionWith({
-                    type: model.actionTypes[endpointName].FAILED,
+                    type: model ? model.actionTypes[endpointName].FAILED : endpoint.actionTypes.FAILED,
                     requestId: requestId,
                     error: true,
                     model: model ? modelName : undefined,
