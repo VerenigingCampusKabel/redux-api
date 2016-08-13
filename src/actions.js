@@ -15,5 +15,12 @@ export const createApiActions = (api) => {
     for (const [modelName, model] of Object.entries(api.models)) {
         models[modelName] = model.actions;
     }
-    return models;
+
+    const actions = {
+        ...models
+    };
+    for (const endpointName of Object.keys(api.customEndpoints)) {
+        actions[endpointName] = createApiAction(undefined, endpointName);
+    }
+    return actions;
 };
