@@ -11,7 +11,7 @@ export const createApiActionTypes = (...apis) => {
             if (typeof api !== 'object') {
                 throw new InvalidConfigError('Invalid API configuration: ' + api);
             }
-            for (const [typeName, type] of Object.entries(api.actionTypes)) {
+            for (const [typeName, type] of Object.entries(api.actionTypes.all)) {
                 types[(appendName ? api.name + '_' : '') + typeName] = type;
             }
         }

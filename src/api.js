@@ -113,7 +113,10 @@ export const createApi = (config) => {
             endpoint.actionTypes = {};
             const actionType = camelCaseToUpperUnderscore(endpointName);
             for (const state of ACTION_STATES) {
-                endpoint.actionTypes[state] = actionType + '_' + state;
+                const symbol = Symbol(api.name + '_' + actionType + '_' + state);
+                endpoint.actionTypes[state] = symbol;
+                api.actionTypes.all[actionType + '_' + state] = symbol;
+                api.actionTypes[state.toLowerCase()].push(symbol);
             }
         }
     }
