@@ -2,7 +2,7 @@ import {InvalidConfigError} from './errors';
 import {getJSON} from './util';
 
 export const VALID_REQUEST_PROPERTIES = ['url', 'method', 'headers', 'query', 'body', 'mode', 'credentials', 'cache', 'redirect', 'referer', 'integrity'];
-export const VALID_RESPONSE_PROPERTIES = ['bailout', 'payload'];
+export const VALID_RESPONSE_PROPERTIES = ['bailout', 'payload', 'error'];
 
 export const validateEnpoint = (endpointName, endpoint, isDefaults = false) => {
     for (const property of Object.keys(endpoint)) {

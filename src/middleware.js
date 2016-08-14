@@ -8,11 +8,20 @@ import {toQueryString, generateUUID} from './util';
 const actionWith = async (action, endpoint, ...args) => {
     // Only execute payload function on response action types
     if (action.payload && !(action.payload instanceof Error)) {
-        try {
-            action.payload = await endpoint.payload(...args);
-        } catch (err) {
-            action.error = true;
-            action.payload = new InternalError(err.message);
+        if (action.payload instanceof Error) {
+            try {
+                action.payload = await endpoint.error(...args);
+            } catch (err) {
+                action.error = true;
+                action.payload = new InternalError(err.message);
+            }
+        } else {
+            try {
+                action.payload = await endpoint.payload(...args);
+            } catch (err) {
+                action.error = true;
+                action.payload = new InternalError(err.message);
+            }
         }
     }
 
