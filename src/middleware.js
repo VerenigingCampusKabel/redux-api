@@ -1,10 +1,9 @@
-import qs from 'qs';
 import fetch from 'isomorphic-fetch';
 
 import {RequestError, InternalError} from './errors';
 import {CALL_API, INVALID_REQUEST} from './types';
 import {VALID_REQUEST_PROPERTIES} from './validation';
-import {generateUUID} from './util';
+import {toQueryString, generateUUID} from './util';
 
 const actionWith = async (action, endpoint, ...args) => {
     // Only execute payload function on response action types
@@ -84,11 +83,7 @@ export const createApiMiddleware = (config) => {
 
                 // Parse query string
                 if (request.query) {
-                    if (typeof request.query === 'object') {
-                        request.query = qs.stringify(request.query);
-                    } else {
-                        request.query = request.query.toString();
-                    }
+                    request.query = toQueryString(request.query);
                 }
 
                 // Check if the request should be canceled
