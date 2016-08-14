@@ -7,10 +7,10 @@ import {toQueryString, generateUUID} from './util';
 
 const actionWith = async (action, endpoint, ...args) => {
     // Only execute payload function on response action types
-    if (action.payload && !(action.payload instanceof Error)) {
+    if (action.payload) {
         if (action.payload instanceof Error) {
             try {
-                action.payload = await endpoint.error(...args);
+                action.payload = endpoint.error ? await endpoint.error(...args) : action.payload;
             } catch (err) {
                 action.error = true;
                 action.payload = new InternalError(err.message);
