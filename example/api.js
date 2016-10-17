@@ -4,6 +4,8 @@ export default createApi({
     name: 'EXAMPLE_API',
     url: 'http://api.example.com/api/v1',
     stripSlash: true,
+    reducer: (state) => state.api,
+    selectors: true,
     models: [
         'user',
         'device'

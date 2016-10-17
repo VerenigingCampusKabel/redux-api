@@ -1,3 +1,6 @@
+import isValidUrl from 'valid-url';
+import {createSelector} from 'reselect';
+
 import {createApiAction} from './actions';
 import {InvalidConfigError} from './errors';
 import {camelCaseToUpperUnderscore, capatalize} from './util';
@@ -26,7 +29,15 @@ export const createApi = (config) => {
     if (url.charAt(url.length - 1) === '/') {
         url = url.substring(0, url.length - 1);
     }
-    // TODO: check if url is valid
+    if (!isValidUrl(url)) {
+        throw new InvalidConfigError(`Invalid API base url: ${config.url}`);
+    }
+
+    // Validate reducer function
+    if (typeof config.reducer === 'string') {
+        const reducerName = config.reducer;
+        config.reducer = (state) => state[reducerName];
+    }
 
     // Validate API model list
     if (!config.models) {
@@ -79,7 +90,8 @@ export const createApi = (config) => {
         const model = {
             url: modelName,
             actionTypes: {},
-            actions: {}
+            actions: {},
+            selectors: {}
         };
         api.models[modelName] = model;
 
@@ -97,6 +109,34 @@ export const createApi = (config) => {
             const action = createApiAction(modelName, endpointName);
             model.actions[endpointName] = action;
             api.actions[endpointName + capatalize(modelName)] = action;
+        }
+
+        if (config.selectors) {
+            // Generate model selectors
+            model.selectors.models = (state) => config.reducer(state).getIn(['models', modelName]);
+            model.selectors.page = (state, props, index) => config.reducer(state).getIn(['pages', modelName, index]);
+
+            // Single model selectors
+            model.selectors.singleLoading = (state, props, modelId) => config.reducer(state).hasIn(['models', modelName, modelId]);
+            model.selectors.singleData = (state, props, modelId) => config.reducer(state).getIn(['models', modelName, modelId]);
+
+            // Multiple models selectors
+            model.selectors.multipleLoading = (state, props, models) => models.reduce((flag, value, key) => {
+                return flag && config.reducer(state).hasIn(['models', modelName, key]);
+            }, true);
+            model.selectors.multipleData = (state, props, models) => config.reducer(state).getIn(['models', modelName]).filter((value, key) => models.has(key));
+
+            // Page selectors
+            model.selectors.pageLoading = createSelector(
+                model.selectors.models,
+                model.selectors.page,
+                (models, page) => !page || (models && !page.isSuperset(models.keys()))
+            );
+            model.selectors.pageData = createSelector(
+                model.selectors.models,
+                model.selectors.page,
+                (models, page) => models && (page ? models.filter((person, personId) => page.contains(personId)).valueSeq() : null)
+            );
         }
     }
 
