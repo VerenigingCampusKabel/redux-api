@@ -1,4 +1,4 @@
-import isValidUrl from 'valid-url';
+import {isUri} from 'valid-url';
 import {createSelector} from 'reselect';
 
 import {createApiAction} from './actions';
@@ -29,7 +29,7 @@ export const createApi = (config) => {
     if (url.charAt(url.length - 1) === '/') {
         url = url.substring(0, url.length - 1);
     }
-    if (!isValidUrl(url)) {
+    if (!isUri(url)) {
         throw new InvalidConfigError(`Invalid API base url: ${config.url}`);
     }
 
