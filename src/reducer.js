@@ -37,13 +37,15 @@ export const createApiReducer = (api) => {
                 }
                 case 'get':
                 case 'update': {
-                    return state.setIn(['models', action.model, data.get('id')], fromJS({
+                    const instance = fromJS(data);
+                    return state.setIn(['models', action.model, instance.get('id')], fromJS({
                         timestamp: new Date(),
-                        instance: data
+                        instance
                     }));
                 }
                 case 'delete': {
-                    return state.deleteIn(['models', action.model, data.get('id')]);
+                    const instance = fromJS(data);
+                    return state.deleteIn(['models', action.model, instance.get('id')]);
                 }
                 default: {
                     return state;
