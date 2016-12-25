@@ -36,7 +36,10 @@
   },
   "dependencies": {
     "babel-runtime": "^6.9.2",
+    "humps": "^2.0.0",
+    "immutable": "^3.8.1",
     "isomorphic-fetch": "^2.2.1",
+    "normalizr": "^3.0.0-alpha.5",
     "present": "^1.0.0",
     "qs": "^6.2.1",
     "valid-url": "^1.0.9"

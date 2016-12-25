@@ -10,13 +10,13 @@ export default createApi({
         // Strip trailing slash from URL
         stripTrailingSlash: true,
 
-        // Camalize response data after request
-        camalize: {
+        // Camelize response data after request
+        camelize: {
             response: true
         },
 
-        // Decamlize query and body objects before request
-        decamalize: {
+        // Decamelize query and body objects before request
+        decamelize: {
             query: true,
             body: true
         }
