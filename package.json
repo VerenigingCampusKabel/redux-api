@@ -31,8 +31,8 @@
     "clean": "rimraf lib",
     "build:babel": "cross-env NODE_ENV=production babel src --out-dir lib",
     "build:babel2": "cross-env NODE_ENV=production babel lib --out-dir lib",
-    "build": "npm run clean && npm run build:babel && npm run build:babel2",
-    "prepublish": "npm run build"
+    "build": "yarn run clean && yarn run build:babel && yarn run build:babel2",
+    "prepublish": "yarn run build"
   },
   "dependencies": {
     "babel-runtime": "^6.9.2",
@@ -55,5 +55,8 @@
     "eslint-plugin-babel": "^3.2.0",
     "rimraf": "^2.5.2",
     "uglify-js": "^2.7.0"
+  },
+  "peerDependencies": {
+    "redux-thunk": "^2.1.0"
   }
 }

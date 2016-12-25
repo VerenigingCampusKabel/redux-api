@@ -1,20 +1,23 @@
 # redux-cached-api
 
-Redux middleware for calling and caching a (REST) API
+Redux middleware for calling and caching a (REST) API.
+
+## Requirements
+- [Redux Thunk](https://github.com/gaearon/redux-thunk) middleware is required.
 
 ## Installation
 ```
-$ npm install redux-cached-api
+$ yarn add redux-cached-api
 ```
 
 ## Usage
 *Work in progress*
 
-## Development
+## Contributing
 ```
 $ git clone https://github.com/VerenigingCampusKabel/redux-cached-api
 $ cd redux-cached-api
-$ npm install
+$ yarn install
 ```
 
 ## Contributors
