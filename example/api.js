@@ -1,15 +1,28 @@
 import {createApi} from '../lib';
 
+import * as entities from './entities';
+
+// Define API
 export default createApi({
     name: 'EXAMPLE_API',
-    url: 'http://api.example.com/api/v1',
-    stripSlash: true,
-    reducer: (state) => state.api,
-    selectors: true,
-    models: [
-        'user',
-        'device'
-    ],
+    url: 'https://api.example.com/api/v1',
+    options: {
+        // Strip trailing slash from URL
+        stripTrailingSlash: true,
+
+        // Camalize response data after request
+        camalize: {
+            response: true
+        },
+
+        // Decamlize query and body objects before request
+        decamalize: {
+            query: true,
+            body: true
+        }
+    },
+
+    // Request defaults
     defaults: {
         headers: {
             'Content-Type': 'application/json'
@@ -17,36 +30,45 @@ export default createApi({
         body: (payload) => JSON.stringify(payload),
         credentials: 'include'
     },
-    endpoints: {
+
+    // Entities
+    entities,
+
+    // Entity endpoints (usually CRUD)
+    entityEndpoints: {
         getAll: {
             url: '/',
             method: 'GET'
         },
-        get: {
-            url: (payload) => `/${payload.id}`,
-            method: 'GET'
-        },
-        create: {
+        createSingle: {
             url: '/',
             method: 'POST'
         },
-        update: {
+        getSingle: {
+            url: (payload) => `/${payload.id}`,
+            method: 'GET'
+        },
+        updateSingle: {
             url: (payload) => `/${payload.id}`,
             method: 'PUT'
         },
-        delete: {
+        deleteSingle: {
             url: (payload) => `/${payload.id}`,
             method: 'DELETE'
         }
     },
-    customEndpoints: {
-        login: {
-            url: '/login',
+    entityEndpointDefaults: {},
+
+    // Custom endpoints
+    endpoints: {
+        signIn: {
+            url: '/signin',
             method: 'POST'
         },
-        register: {
-            url: '/register',
+        signUp: {
+            url: '/signup',
             method: 'POST'
         }
-    }
+    },
+    endpointDefaults: {}
 });
