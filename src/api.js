@@ -37,6 +37,9 @@ export const createApi = (config) => {
         url = url.substring(0, url.length - 1);
     }
 
+    // Validate options
+    const options = config.options || {};
+
     // Validate entities
     const entities = config.entities || {};
     Object.values(entities).forEach((entity) => validateEntity(entity));
@@ -45,24 +48,39 @@ export const createApi = (config) => {
     const defaults = normalizeConfig(config.defaults || {});
     validateRequestConfig(defaults, 'API defaults');
 
-    // TODO: validate endpoints
-    // validateRequestConfig(endpoint, 'endpoint');
-    // validateEnpoint(endpointName, endpoint);
-    // if (!endpoint.payload) {
-    //     endpoint.payload = getJSON;
-    // }
+    // Validate default entity endpoint configuration
+    const entityEndpointDefaults = normalizeConfig(config.entityEndpointDefaults || {});
+    validateRequestConfig(entityEndpointDefaults, 'entity endpoint defaults');
+    const hasDefaultEntityUrl = entityEndpointDefaults.url !== undefined && entityEndpointDefaults.url !== null;
 
-    // TODO: validate custom endpoints
-    // validateRequestConfig(endpoint, 'custom endpoint');
-    // validateEnpoint(endpointName, endpoint);
-    // if (!endpoint.payload) {
-    //     endpoint.payload = getJSON;
-    // }
+    // Validate entity endpoints
+    const entityEndpoints = config.entityEndpoints || {};
+    for (const [endpointName, endpoint] of Object.entries(entityEndpoints)) {
+        validateRequestConfig(endpoint, 'entity endpoint');
+        validateEndpoint(endpointName, endpoint, hasDefaultEntityUrl);
+    }
+
+    // Validate default custom endpoint configuration
+    const endpointDefaults = normalizeConfig(config.endpointDefaults || {});
+    validateRequestConfig(endpointDefaults, 'custom endpoint defaults');
+    const hasDefaultUrl = endpointDefaults.url !== undefined && endpointDefaults.url !== null;
+
+    // Validate custom endpoints
+    const endpoints = config.endpoints || {};
+    for (const [endpointName, endpoint] of Object.entries(endpoints)) {
+        validateRequestConfig(endpoint, 'custom endpoint');
+        validateEndpoint(endpointName, endpoint, hasDefaultUrl);
+    }
 
     return {
         name,
         url,
+        options,
         entities,
-        defaults
+        defaults,
+        entityEndpoints,
+        entityEndpointDefaults,
+        endpoints,
+        endpointDefaults
     };
 };

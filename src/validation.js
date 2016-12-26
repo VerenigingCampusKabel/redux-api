@@ -51,11 +51,12 @@ export const validateRequestConfig = (config, name) => {
  *
  * @param {string} endpointName Name of the endpoint
  * @param {object} endpoint The endpoint to validate
+ * @param {boolean} hasDefaultUrl Indicates if the endpoint already has a default URL
  * @throws {InvalidConfigError}
  */
-export const validateEnpoint = (endpointName, endpoint) => {
+export const validateEnpoint = (endpointName, endpoint, hasDefaultUrl = false) => {
     // Validate endpoint URL
-    if (!endpoint.url) {
+    if (!endpoint.url && !hasDefaultUrl) {
         throw new InvalidConfigError(`Missing request URL for endpoint "${endpointName}"`);
     }
 };
