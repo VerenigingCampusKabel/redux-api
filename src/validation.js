@@ -2,7 +2,6 @@ import {Schema} from 'normalizr';
 import {Record} from 'immutable';
 
 import {InvalidConfigError} from './errors';
-import {getJSON} from './util';
 
 /**
  * Validate an API entity
@@ -33,34 +32,30 @@ export const VALID_REQUEST_PROPERTIES = ['url', 'method', 'headers', 'query', 'b
 export const VALID_RESPONSE_PROPERTIES = ['bailout', 'payload', 'error'];
 
 /**
+ * Validate an API request configuration
+ *
+ * @param {object} config The request configuration to validate
+ * @param {string} name Name of the request configuration (only displayed in the error)
+ * @throws {InvalidConfigError}
+ */
+export const validateRequestConfig = (config, name) => {
+    for (const property of Object.keys(config)) {
+        if (VALID_REQUEST_PROPERTIES.indexOf(property) === -1 && VALID_RESPONSE_PROPERTIES.indexOf(property) === -1) {
+            throw new InvalidConfigError(`Invalid request property "${property}" for ${name}`);
+        }
+    }
+};
+
+/**
  * Validate an API endpoint
  *
  * @param {string} endpointName Name of the endpoint
  * @param {object} endpoint The endpoint to validate
- * @param {boolean} isDefaults Indicates whether the endpoint is actually a default endpoint configuration
  * @throws {InvalidConfigError}
  */
-export const validateEnpoint = (endpointName, endpoint, isDefaults = false) => {
-    for (const property of Object.keys(endpoint)) {
-        if (VALID_REQUEST_PROPERTIES.indexOf(property) === -1 && VALID_RESPONSE_PROPERTIES.indexOf(property) === -1) {
-            throw new InvalidConfigError(`Invalid endpoint property (${property}) on ${endpointName}`);
-        }
-
-        // Normalize properties
-        if (typeof endpoint[property] !== 'function') {
-            const value = endpoint[property];
-            endpoint[property] = () => value;
-        }
-    }
-
-    if (!isDefaults) {
-        // Validate url
-        if (!endpoint.url) {
-            throw new InvalidConfigError(`Missing endpoint url on ${endpointName}`);
-        }
-
-        if (!endpoint.payload) {
-            endpoint.payload = getJSON;
-        }
+export const validateEnpoint = (endpointName, endpoint) => {
+    // Validate endpoint URL
+    if (!endpoint.url) {
+        throw new InvalidConfigError(`Missing request URL for endpoint "${endpointName}"`);
     }
 };

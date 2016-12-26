@@ -2,7 +2,8 @@ import {decamelize} from 'humps';
 import {isUri} from 'valid-url';
 
 import {InvalidConfigError} from './errors';
-import {validateEntity} from './validation';
+import {normalizeConfig} from './util';
+import {validateEntity, validateRequestConfig, validateEndpoint} from './validation';
 
 /**
  * Define an API
@@ -37,13 +38,31 @@ export const createApi = (config) => {
     }
 
     // Validate entities
-    if (config.entities) {
-        Object.values(config.entities).forEach((entity) => validateEntity(entity));
-    }
+    const entities = config.entities || {};
+    Object.values(entities).forEach((entity) => validateEntity(entity));
+
+    // Validate default endpoint configuration
+    const defaults = normalizeConfig(config.defaults || {});
+    validateRequestConfig(defaults, 'API defaults');
+
+    // TODO: validate endpoints
+    // validateRequestConfig(endpoint, 'endpoint');
+    // validateEnpoint(endpointName, endpoint);
+    // if (!endpoint.payload) {
+    //     endpoint.payload = getJSON;
+    // }
+
+    // TODO: validate custom endpoints
+    // validateRequestConfig(endpoint, 'custom endpoint');
+    // validateEnpoint(endpointName, endpoint);
+    // if (!endpoint.payload) {
+    //     endpoint.payload = getJSON;
+    // }
 
     return {
         name,
         url,
-        entities: config.entities || {}
+        entities,
+        defaults
     };
 };
