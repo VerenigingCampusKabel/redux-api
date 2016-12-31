@@ -2,6 +2,7 @@ import {decamelize} from 'humps';
 import {isUri} from 'valid-url';
 
 import {InvalidConfigError} from './errors';
+import {_createApiTypes} from './types';
 import {normalizeConfig} from './util';
 import {validateEntity, validateRequestConfig, validateEndpoint} from './validation';
 
@@ -44,6 +45,11 @@ export const createApi = (config) => {
     const entities = config.entities || {};
     Object.values(entities).forEach((entity) => validateEntity(entity));
 
+    // Define entity names
+    entities.forEach((entity) => {
+        entity.name = entity.schema.getKey();
+    });
+
     // Validate default endpoint configuration
     const defaults = normalizeConfig(config.defaults || {});
     validateRequestConfig(defaults, 'API defaults');
@@ -72,7 +78,8 @@ export const createApi = (config) => {
         validateEndpoint(endpointName, endpoint, hasDefaultUrl);
     }
 
-    return {
+    // Create final API configuration
+    const api = {
         name,
         url,
         options,
@@ -83,4 +90,9 @@ export const createApi = (config) => {
         endpoints,
         endpointDefaults
     };
+
+    // Create action types
+    _createApiTypes(api);
+
+    return api;
 };
