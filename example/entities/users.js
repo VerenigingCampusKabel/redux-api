@@ -21,6 +21,8 @@ const record = new Record({
 });
 
 export default {
+    urlPrefix: '/user',
+    urlPostfix: '',
     schema,
     record
 };

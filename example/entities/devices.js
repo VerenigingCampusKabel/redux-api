@@ -18,6 +18,8 @@ const record = new Record({
 });
 
 export default {
+    urlPrefix: '/device',
+    urlPostfix: '',
     schema,
     record
 };

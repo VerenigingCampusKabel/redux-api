@@ -13,15 +13,15 @@ export const requestStages = {
  *
  * @param {object} endpoints Object containing endpoint information
  * @param {string} prefix Action type prefix
- * @param {string} suffix Action type suffix
+ * @param {string} postfix Action type postfix
  * @return {object} The generated action types
  */
-export const _createEndpointTypes = (endpoints, prefix = '', suffix = '') => {
+export const _createEndpointTypes = (endpoints, prefix = '', postfix = '') => {
     const types = {};
     for (const endpoint of Object.keys(endpoints)) {
         const endpointName = decamelize(endpoint).toUpperCase();
         for (const [stageKey, stage] of Object.entries(requestStages)) {
-            types[endpoint][stageKey] = Symbol(`${prefix}${endpointName}_${stage}${suffix}`);
+            types[endpoint][stageKey] = Symbol(`${prefix}${endpointName}_${stage}${postfix}`);
         }
     }
     return types;
@@ -71,10 +71,10 @@ export const createApiTypes = (...apis) => {
             throw new InvalidConfigError(`Invalid API configuration: ${api}`);
         }
 
-        for (const [entityName, entity] of Object.entries(api.types.entities)) {
+        for (const entity of Object.values(api.types.entities)) {
             for (const [endpointName, endpoint] of Object.entries(entity)) {
                 for (const [stageKey, type] of Object.entries(endpoint)) {
-                    types.all[`${api.name}_${entityName}_${endpointName}_${requestStages[stageKey]}`] = type;
+                    types.all[`${api.name}_${entity.name}_${endpointName}_${requestStages[stageKey]}`] = type;
                     types[stageKey].push(type);
                 }
             }

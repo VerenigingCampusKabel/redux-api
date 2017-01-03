@@ -1,4 +1,4 @@
-import {createApi} from '../lib';
+import {createApi, getJSON} from '../lib';
 
 import * as entities from './entities';
 
@@ -22,13 +22,18 @@ export default createApi({
         }
     },
 
-    // Request defaults
+    // Request/response defaults
     defaults: {
+        // Request defaults
         headers: {
             'Content-Type': 'application/json'
         },
         body: (payload) => JSON.stringify(payload),
-        credentials: 'include'
+        credentials: 'include',
+
+        // Reseponse options
+        payload: getJSON,
+        error: getJSON
     },
 
     // Entities

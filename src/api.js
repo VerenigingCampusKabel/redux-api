@@ -4,7 +4,7 @@ import {isUri} from 'valid-url';
 import {InvalidConfigError} from './errors';
 import {_createApiTypes} from './types';
 import {normalizeConfig} from './util';
-import {validateEntity, validateRequestConfig, validateEndpoint} from './validation';
+import {_validateEntity, _validateRequestConfig, _validateEndpoint} from './validation';
 
 /**
  * Define an API
@@ -43,39 +43,44 @@ export const createApi = (config) => {
 
     // Validate entities
     const entities = config.entities || {};
-    Object.values(entities).forEach((entity) => validateEntity(entity));
+    Object.values(entities).forEach((entity) => _validateEntity(entity));
 
-    // Define entity names
+    // Normalize entites
     entities.forEach((entity) => {
+        // Define entity name
         entity.name = entity.schema.getKey();
+
+        // Normalize url prefix and postfix
+        entity.urlPrefix = entity.urlPrefix || '';
+        entity.urlPostfix = entity.urlPostfix || '';
     });
 
     // Validate default endpoint configuration
     const defaults = normalizeConfig(config.defaults || {});
-    validateRequestConfig(defaults, 'API defaults');
+    _validateRequestConfig(defaults, 'API defaults');
 
     // Validate default entity endpoint configuration
     const entityEndpointDefaults = normalizeConfig(config.entityEndpointDefaults || {});
-    validateRequestConfig(entityEndpointDefaults, 'entity endpoint defaults');
+    _validateRequestConfig(entityEndpointDefaults, 'entity endpoint defaults');
     const hasDefaultEntityUrl = entityEndpointDefaults.url !== undefined && entityEndpointDefaults.url !== null;
 
     // Validate entity endpoints
     const entityEndpoints = config.entityEndpoints || {};
     for (const [endpointName, endpoint] of Object.entries(entityEndpoints)) {
-        validateRequestConfig(endpoint, 'entity endpoint');
-        validateEndpoint(endpointName, endpoint, hasDefaultEntityUrl);
+        _validateRequestConfig(endpoint, 'entity endpoint');
+        _validateEndpoint(endpointName, endpoint, hasDefaultEntityUrl);
     }
 
     // Validate default custom endpoint configuration
     const endpointDefaults = normalizeConfig(config.endpointDefaults || {});
-    validateRequestConfig(endpointDefaults, 'custom endpoint defaults');
+    _validateRequestConfig(endpointDefaults, 'custom endpoint defaults');
     const hasDefaultUrl = endpointDefaults.url !== undefined && endpointDefaults.url !== null;
 
     // Validate custom endpoints
     const endpoints = config.endpoints || {};
     for (const [endpointName, endpoint] of Object.entries(endpoints)) {
-        validateRequestConfig(endpoint, 'custom endpoint');
-        validateEndpoint(endpointName, endpoint, hasDefaultUrl);
+        _validateRequestConfig(endpoint, 'custom endpoint');
+        _validateEndpoint(endpointName, endpoint, hasDefaultUrl);
     }
 
     // Create final API configuration
