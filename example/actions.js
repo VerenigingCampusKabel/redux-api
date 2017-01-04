@@ -4,8 +4,11 @@ import api from './api';
 
 // Create API models with their actions
 const {
-    user,
-    device
+    entities: {
+        user,
+        device
+    },
+    endpoints
 } = createApiActions(api);
 
 // Define custom model actions
@@ -13,8 +16,9 @@ user.customAction = () => ({
     type: Symbol('USER_CUSTOM_ACTION')
 });
 
-// Export models
+// Export entity actions and endpoint actions
 export {
+    endpoints as api,
     user,
     device
 };

@@ -2,9 +2,6 @@
 
 Redux middleware for calling and caching a (REST) API.
 
-## Requirements
-- [Redux Thunk](https://github.com/gaearon/redux-thunk) middleware is required.
-
 ## Installation
 ```
 $ yarn add redux-cached-api
