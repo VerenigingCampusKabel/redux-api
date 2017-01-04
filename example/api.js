@@ -10,6 +10,9 @@ export default createApi({
         // Strip trailing slash from URL
         stripTrailingSlash: true,
 
+        // How should body objects be parsed (json or urlencoded), however this does not set the content type header
+        bodyType: 'json',
+
         // Camelize response data after request
         camelize: {
             response: true
@@ -28,7 +31,7 @@ export default createApi({
         headers: {
             'Content-Type': 'application/json'
         },
-        body: (payload) => JSON.stringify(payload),
+        body: (payload) => payload,
         credentials: 'include',
 
         // Reseponse options

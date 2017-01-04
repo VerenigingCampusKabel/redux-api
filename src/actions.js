@@ -8,6 +8,9 @@ import {InvalidConfigError} from './errors';
  * @param {string} entityName Entity name
  * @param {string} endpointName Name of the endpoint
  * @param {object} types Object containing the endpoint action types
+ * @param {string} types.request Request action type
+ * @param {string} types.success Success action type
+ * @param {string} types.failure Failure action type
  * @return {function} The created endpoint action
  */
 export const _createApiAction = (apiName, isEntity, entityName, endpointName, types) => {

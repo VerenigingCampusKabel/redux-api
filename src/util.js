@@ -25,7 +25,6 @@ export const normalizeConfig = (config) => {
  * @return {string} The resulting query string
  */
 export const toQueryString = (value) => {
-    // TODO: handle (de)camelization
     if (typeof value === 'object') {
         return qs.stringify(value);
     }
@@ -42,6 +41,7 @@ export const HTTP_STATUS_EMPTY = [204, 205];
  *
  * @param {Response} response A Fetch API response
  * @param {object} request Object containing request information
+ * @param {object} request.api API configuration
  * @return {Promise} A promise resolving the parsed JSON or null
  */
 export const getJSON = async (response, {api}) => {

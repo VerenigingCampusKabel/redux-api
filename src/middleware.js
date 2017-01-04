@@ -102,7 +102,10 @@ export const createApiMiddleware = (...apis) => {
             // Perform the API request
             const response = await _makeApiRequest(endpoint, endpointDefaults, api.defaults, requestPayload, {
                 urlPrefix: isEntity ? entity.urlPrefix : '',
-                urlPostfix: isEntity ? entity.urlPostfix : ''
+                urlPostfix: isEntity ? entity.urlPostfix : '',
+                camelize: api.options.camelize,
+                decamelize: api.options.decamelize,
+                bodyType: api.options.bodyType
             });
 
             // The server responded with a status code outside the 200-399 range (i.e. error)
