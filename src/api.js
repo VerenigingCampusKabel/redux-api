@@ -3,7 +3,7 @@ import {isUri} from 'valid-url';
 
 import {InvalidConfigError} from './errors';
 import {_createApiTypes} from './types';
-import {normalizeConfig} from './util';
+import {normalizeConfig, getJSON} from './util';
 import {_validateEntity, _validateRequestConfig, _validateEndpoint} from './validation';
 
 /**
@@ -58,6 +58,14 @@ export const createApi = (config) => {
     // Validate default endpoint configuration
     const defaults = normalizeConfig(config.defaults || {});
     _validateRequestConfig(defaults, 'API defaults');
+
+    // Set default payload and erorr handlers (setting them to false disabled this behaviour)
+    if (defaults.payload === undefined || defaults.payload === null) {
+        defaults.payload = getJSON;
+    }
+    if (defaults.error === undefined || defaults.error === null) {
+        defaults.error = getJSON;
+    }
 
     // Validate default entity endpoint configuration
     const entityEndpointDefaults = normalizeConfig(config.entityEndpointDefaults || {});
