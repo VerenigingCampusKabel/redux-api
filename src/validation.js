@@ -1,4 +1,4 @@
-import {Schema} from 'normalizr';
+import {schema} from 'normalizr';
 import {Record} from 'immutable';
 
 import {InvalidConfigError} from './errors';
@@ -14,18 +14,18 @@ export const _validateEntity = (entity) => {
     if (!entity.schema) {
         throw new InvalidConfigError(`Missing entitiy schema`);
     }
-    if (!(entity.schema instanceof Schema)) {
-        throw new InvalidConfigError(`Invalid entity schema, should be an instance of "normalizr.Schema"`);
+    if (!(entity.schema instanceof schema.Entity)) {
+        throw new InvalidConfigError(`Invalid entity schema, should be an instance of "normalizr.schema.Entity"`);
     }
-    const key = entity.schema.getKey();
+    const key = entity.schema.key;
 
     // Validate entity record
     if (!entity.record) {
         throw new InvalidConfigError(`Missing entitiy record for "${key}"`);
     }
-    if (!(entity.record instanceof Record)) {
-        throw new InvalidConfigError(`Invalid entity record for "${key}", should be an instance of "immutable.Record"`);
-    }
+    // if (!(entity.record instanceof Record)) {
+    //     throw new InvalidConfigError(`Invalid entity record for "${key}", should be an instance of "immutable.Record"`);
+    // }
 
     // Validate url prefix
     if (entity.urlPrefix && typeof entity.urlPrefix !== 'string') {
@@ -71,7 +71,7 @@ export const _validateRequestConfig = (config, name) => {
  * @param {boolean} hasDefaultUrl Indicates if the endpoint already has a default URL
  * @throws {InvalidConfigError}
  */
-export const _validateEnpoint = (endpointName, endpoint, hasDefaultUrl = false) => {
+export const _validateEndpoint = (endpointName, endpoint, hasDefaultUrl = false) => {
     // Validate endpoint URL
     if (!endpoint.url && !hasDefaultUrl) {
         throw new InvalidConfigError(`Missing request URL for endpoint "${endpointName}"`);

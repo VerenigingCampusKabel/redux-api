@@ -19,7 +19,8 @@ export const createApi = (config) => {
     }
 
     // Enforce upper camelcase
-    const name = config.name ? decamelize(config.name).toUpperCase() : 'API';
+    // TODO: enforce upper case
+    const name = config.name ? config.name : 'API';
 
     // Validate API base url
     if (!config.url) {
@@ -46,9 +47,9 @@ export const createApi = (config) => {
     Object.values(entities).forEach((entity) => _validateEntity(entity));
 
     // Normalize entites
-    entities.forEach((entity) => {
+    Object.values(entities).forEach((entity) => {
         // Define entity name
-        entity.name = entity.schema.getKey();
+        entity.name = entity.schema.key;
 
         // Normalize url prefix and postfix
         entity.urlPrefix = entity.urlPrefix || '';
@@ -73,10 +74,12 @@ export const createApi = (config) => {
     const hasDefaultEntityUrl = entityEndpointDefaults.url !== undefined && entityEndpointDefaults.url !== null;
 
     // Validate entity endpoints
-    const entityEndpoints = config.entityEndpoints || {};
-    for (const [endpointName, endpoint] of Object.entries(entityEndpoints)) {
+    const entityEndpoints = {};
+    for (const [endpointName, endpoint] of Object.entries(config.entityEndpoints || {})) {
         _validateRequestConfig(endpoint, 'entity endpoint');
         _validateEndpoint(endpointName, endpoint, hasDefaultEntityUrl);
+
+        entityEndpoints[endpointName] = normalizeConfig(endpoint);
     }
 
     // Validate default custom endpoint configuration
@@ -85,10 +88,12 @@ export const createApi = (config) => {
     const hasDefaultUrl = endpointDefaults.url !== undefined && endpointDefaults.url !== null;
 
     // Validate custom endpoints
-    const endpoints = config.endpoints || {};
-    for (const [endpointName, endpoint] of Object.entries(endpoints)) {
+    const endpoints = {};
+    for (const [endpointName, endpoint] of Object.entries(config.endpoints || {})) {
         _validateRequestConfig(endpoint, 'custom endpoint');
         _validateEndpoint(endpointName, endpoint, hasDefaultUrl);
+
+        endpoints[endpointName] = normalizeConfig(endpoint);
     }
 
     // Create final API configuration

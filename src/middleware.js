@@ -16,7 +16,7 @@ export const createApiMiddleware = (...apis) => {
     }
 
     // Create API lookup table
-    const apiLookup = apis.reduce((final, api) => ({...final, [api.name]: api}));
+    const apiLookup = apis.reduce((final, api) => ({...final, [api.name]: api}), {});
 
     // Merge request action types
     const requestTypes = apis.reduce((final, api) => final.concat(api.mergedTypes.request), []);
@@ -40,7 +40,7 @@ export const createApiMiddleware = (...apis) => {
             entity = api.entities[entityName];
             endpoint = api.entityEndpoints[endpointName];
             endpointDefaults = api.entityEndpointDefaults;
-            types = api.types.entites[entityName][endpointName];
+            types = api.types.entities[entityName][endpointName];
         } else {
             endpoint = api.endpoints[endpointName];
             endpointDefaults = api.endpointDefaults;
@@ -100,7 +100,7 @@ export const createApiMiddleware = (...apis) => {
 
         try {
             // Perform the API request
-            const response = await _makeApiRequest(endpoint, endpointDefaults, api.defaults, requestPayload, {
+            const response = await _makeApiRequest(api.url, endpoint, endpointDefaults, api.defaults, requestPayload, {
                 urlPrefix: isEntity ? entity.urlPrefix : '',
                 urlPostfix: isEntity ? entity.urlPostfix : '',
                 camelize: api.options.camelize,

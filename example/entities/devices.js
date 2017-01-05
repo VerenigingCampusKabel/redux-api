@@ -1,7 +1,7 @@
-import {Schema} from 'normalizr';
+import {schema as Schema} from 'normalizr';
 import {Record} from 'immutable';
 
-const schema = new Schema('devices');
+const schema = new Schema.Entity('devices');
 
 const record = new Record({
     // Fields

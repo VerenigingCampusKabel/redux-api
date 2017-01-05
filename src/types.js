@@ -20,6 +20,7 @@ export const _createEndpointTypes = (endpoints, prefix = '', postfix = '') => {
     const types = {};
     for (const endpoint of Object.keys(endpoints)) {
         const endpointName = decamelize(endpoint).toUpperCase();
+        types[endpoint] = {};
         for (const [stageKey, stage] of Object.entries(requestStages)) {
             types[endpoint][stageKey] = Symbol(`${prefix}${endpointName}_${stage}${postfix}`);
         }
@@ -37,8 +38,9 @@ export const _createEndpointTypes = (endpoints, prefix = '', postfix = '') => {
  */
 export const _mergeEndpointTypes = (final, endpoints, prefix = '', postfix = '') => {
     for (const [endpointName, endpoint] of Object.entries(endpoints)) {
+        const finalEndpointName = decamelize(endpointName).toUpperCase();
         for (const [stageKey, type] of Object.entries(endpoint)) {
-            final.all[`${prefix}${endpointName}_${requestStages[stageKey]}${prefix}`] = type;
+            final.all[`${prefix}${finalEndpointName}_${requestStages[stageKey]}${postfix}`] = type;
             final[stageKey].push(type);
         }
     }
@@ -66,7 +68,7 @@ export const _createApiTypes = (api) => {
     }
 
     // Generate entity endpoint action types
-    for (const entity of api.entities) {
+    for (const entity of Object.values(api.entities)) {
         const name = decamelize(entity.name).toUpperCase();
         types.entities[entity.name] = _createEndpointTypes(api.entityEndpoints, `${api.name}_${name}_`);
     }
@@ -75,12 +77,13 @@ export const _createApiTypes = (api) => {
     types.custom = _createEndpointTypes(api.endpoints, `${api.name}_`);
 
     // Merge entity endpoint action types
-    for (const entity of Object.values(api.types.entities)) {
+    for (const [entityName, entity] of Object.entries(types.entities)) {
+        const name = decamelize(entityName).toUpperCase();
         _mergeEndpointTypes(mergedTypes, entity, `${api.name}_${name}_`);
     }
 
     // Merge custom endpoint action types
-    _mergeEndpointTypes(mergedTypes, api.types.custom, `${api.name}_${name}_`);
+    _mergeEndpointTypes(mergedTypes, types.custom, `${api.name}_`);
 
     api.types = types;
     api.mergedTypes = mergedTypes;

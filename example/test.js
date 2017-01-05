@@ -1,4 +1,4 @@
 import store from './store';
-import {user} from './actions';
+import {users} from './actions';
 
-store.dispatch(user.getAll());
+store.dispatch(users.getAll({}));

@@ -15,6 +15,7 @@ import {InvalidConfigError} from './errors';
  */
 export const _createApiAction = (apiName, isEntity, entityName, endpointName, types) => {
     return (payload) => ({
+        api: apiName,
         type: types.request,
         isEntity,
         entity: entityName,

@@ -1,14 +1,14 @@
-import {arrayOf} from 'normalizr';
+import {schema} from 'normalizr';
 
 import users from './users';
 import devices from './devices';
 
 // Define associations
-users.define({
-    devices: arrayOf(devices)
+users.schema.define({
+    devices: new schema.Array(devices)
 });
 
-devices.define({
+devices.schema.define({
     user: users
 });
 

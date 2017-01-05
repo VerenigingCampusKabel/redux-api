@@ -10,8 +10,12 @@ console.log(util.inspect(api, false, null));
 
 const middleware = applyMiddleware(
     ({getState, dispatch}) => (next) => async (action) => {
-        console.log('action', util.inspect(action, true, null));
-        next(action);
+        try {
+            console.log('action', util.inspect(action, true, null));
+            return next(action);
+        } catch (err) {
+            console.error(err);
+        }
     },
     createApiMiddleware(api)
 );
