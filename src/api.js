@@ -1,4 +1,3 @@
-// import {decamelize} from 'humps';
 import {isUri} from 'valid-url';
 
 import {InvalidConfigError} from './errors';
@@ -18,9 +17,8 @@ export const createApi = (config) => {
         throw new InvalidConfigError('Invalid API name: ' + config.name);
     }
 
-    // Enforce upper camelcase
-    // TODO: enforce upper case
-    const name = config.name ? config.name : 'API';
+    // Ensure the API has a name
+    const name = config.name || 'API';
 
     // Validate API base url
     if (!config.url) {
