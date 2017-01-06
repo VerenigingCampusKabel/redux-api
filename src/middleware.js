@@ -22,7 +22,7 @@ export const createApiMiddleware = (...apis) => {
     const requestTypes = apis.reduce((final, api) => final.concat(api.mergedTypes.request), []);
 
     // Redux middleware
-    return ({dispatch, getState}) => (next) => async (action) => {
+    return ({getState}) => (next) => async (action) => {
         // Only process our request actions
         if (requestTypes.indexOf(action.type) === -1) {
             return next(action);
@@ -48,7 +48,7 @@ export const createApiMiddleware = (...apis) => {
         }
 
         // Generate dispatch action function (improves readability of the code below)
-        const dispatchAction = ({type, isError = false, error = null, payload = null, hasPayloadError = false, payloadError = null}) => dispatch({
+        const dispatchAction = ({type, isError = false, error = null, payload = null, hasPayloadError = false, payloadError = null}) => next({
             type,
             isEntity,
             entity: entityName,
@@ -98,64 +98,16 @@ export const createApiMiddleware = (...apis) => {
             }
         }
 
+        let response = null;
         try {
             // Perform the API request
-            const response = await _makeApiRequest(api.url, endpoint, endpointDefaults, api.defaults, requestPayload, {
+            response = await _makeApiRequest(api.url, endpoint, endpointDefaults, api.defaults, requestPayload, {
                 urlPrefix: isEntity ? entity.urlPrefix : '',
                 urlPostfix: isEntity ? entity.urlPostfix : '',
                 camelize: api.options.camelize,
                 decamelize: api.options.decamelize,
                 bodyType: api.options.bodyType
             });
-
-            // The server responded with a status code outside the 200-399 range (i.e. error)
-            const isError = response.status < 200 || response.status > 399;
-            let responsePayload = null;
-            let responsePayloadError = null;
-            try {
-                // Attempt to find payload or error function
-                const payloadFunc = isError ? endpoint.error || endpointDefaults.error || api.defaults.error :
-                    endpoint.payload || endpointDefaults.payload || api.defaults.error;
-
-                if (payloadFunc) {
-                    // Invoke payload/error function with the response and request information
-                    responsePayload = await payloadFunc(response, {
-                        api,
-                        type: action.type,
-                        isEntity,
-                        entity,
-                        entityName,
-                        endpoint,
-                        endpointName,
-                        endpointDefaults,
-                        requestPayload
-                    });
-                }
-            } catch (err) {
-                // An error occurred while parsing the response (soft fail)
-                responsePayloadError = err;
-            }
-
-            // Generate error if necessary
-            const error = isError ? new RequestError(`Request failed, the server responded with status ${response.status}`) : null;
-
-            // Dispatch action
-            const result = dispatchAction({
-                type: isError ? types.failure : types.success,
-                isError,
-                error,
-                payload: responsePayload,
-                hasPayloadError: responsePayloadError !== undefined || responsePayload !== null,
-                payloadError: responsePayloadError
-            });
-
-            if (isError) {
-                // Throw the error for the resulting promise
-                throw error;
-            } else {
-                // Return the result for the resulting promise
-                return result;
-            }
         } catch (err) {
             // Dispatch failure action
             dispatchAction({
@@ -166,6 +118,63 @@ export const createApiMiddleware = (...apis) => {
 
             // Throw the error for the resulting promise
             throw err;
+        }
+
+        // The server responded with a status code outside the 200-399 range (i.e. error)
+        const isError = response.status < 200 || response.status > 399;
+        let responsePayload = null;
+        let responsePayloadError = null;
+        try {
+            // Attempt to find payload or error function
+            const payloadFunc = isError ? endpoint.error || endpointDefaults.error || api.defaults.error :
+                endpoint.payload || endpointDefaults.payload || api.defaults.error;
+
+            // Attempt to find a schema function
+            let schema = null;
+            const schemaFunc = endpoint.schema || endpointDefaults.schema || api.defaults.schema;
+            if (schemaFunc) {
+                // Invoke the property function with the entity schema
+                schema = schemaFunc(isEntity ? entity.schema : null);
+            }
+
+            if (payloadFunc) {
+                // Invoke payload/error function with the response and request information
+                responsePayload = await payloadFunc(response, {
+                    api,
+                    type: action.type,
+                    isEntity,
+                    entity,
+                    entityName,
+                    endpoint,
+                    endpointName,
+                    endpointDefaults,
+                    requestPayload
+                }, schema);
+            }
+        } catch (err) {
+            // An error occurred while parsing the response (soft fail)
+            responsePayloadError = err;
+        }
+
+        // Generate error if necessary
+        const error = isError ? new RequestError(`Request failed, the server responded with status ${response.status}`) : null;
+
+        // Dispatch action
+        const result = dispatchAction({
+            type: isError ? types.failure : types.success,
+            isError,
+            error,
+            payload: responsePayload,
+            hasPayloadError: responsePayloadError !== undefined || responsePayload !== null,
+            payloadError: responsePayloadError
+        });
+
+        if (isError) {
+            // Throw the error for the resulting promise
+            throw error;
+        } else {
+            // Return the result for the resulting promise
+            return result;
         }
     };
 };

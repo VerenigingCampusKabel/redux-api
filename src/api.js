@@ -1,4 +1,4 @@
-import {decamelize} from 'humps';
+// import {decamelize} from 'humps';
 import {isUri} from 'valid-url';
 
 import {InvalidConfigError} from './errors';
@@ -49,7 +49,9 @@ export const createApi = (config) => {
     // Normalize entites
     Object.values(entities).forEach((entity) => {
         // Define entity name
-        entity.name = entity.schema.key;
+        if (!entity.name) {
+            entity.name = entity.schema.key;
+        }
 
         // Normalize url prefix and postfix
         entity.urlPrefix = entity.urlPrefix || '';

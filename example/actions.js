@@ -4,7 +4,6 @@ import api from './api';
 
 // Create API models with their actions
 const actions = createApiActions(api);
-console.log(actions);
 
 const {
     entities: {

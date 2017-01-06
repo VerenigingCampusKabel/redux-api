@@ -46,19 +46,23 @@ export default createApi({
     entityEndpoints: {
         getAll: {
             url: '/',
-            method: 'GET'
+            method: 'GET',
+            schema: (entitySchema) => [entitySchema]
         },
         createSingle: {
             url: '/',
-            method: 'POST'
+            method: 'POST',
+            schema: (entitySchema) => entitySchema
         },
         getSingle: {
             url: (payload) => `/${payload.id}`,
-            method: 'GET'
+            method: 'GET',
+            schema: (entitySchema) => entitySchema
         },
         updateSingle: {
             url: (payload) => `/${payload.id}`,
-            method: 'PUT'
+            method: 'PUT',
+            schema: (entitySchema) => entitySchema
         },
         deleteSingle: {
             url: (payload) => `/${payload.id}`,
