@@ -24,10 +24,7 @@ export const _validateEntity = (entity) => {
     }
 
     // Validate entity record
-    if (!entity.record) {
-        throw new InvalidConfigError(`Missing entitiy record for "${key}"`);
-    }
-    // if (!(entity.record instanceof Record)) {
+    // if (entity.record && !(entity.record instanceof Record)) {
     //     throw new InvalidConfigError(`Invalid entity record for "${key}", should be an instance of "immutable.Record"`);
     // }
 
