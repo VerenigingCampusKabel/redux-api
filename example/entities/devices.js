@@ -18,7 +18,7 @@ const record = new Record({
 });
 
 export default {
-    urlPrefix: '/device',
+    urlPrefix: '/devices',
     urlPostfix: '',
     schema,
     record

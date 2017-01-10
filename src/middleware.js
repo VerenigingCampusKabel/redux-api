@@ -131,7 +131,7 @@ export const createApiMiddleware = (...apis) => {
 
             // Attempt to find a schema function
             let schema = null;
-            const schemaFunc = endpoint.schema || endpointDefaults.schema || api.defaults.schema;
+            const schemaFunc = isError ? null : endpoint.schema || endpointDefaults.schema || api.defaults.schema;
             if (schemaFunc) {
                 // Invoke the property function with the entity schema
                 schema = schemaFunc(isEntity ? entity.schema : null);

@@ -5,7 +5,8 @@ import * as entities from './entities';
 // Define API
 export default createApi({
     name: 'EXAMPLE_API',
-    url: 'https://api.example.com/api/v1',
+    // url: 'https://api.example.com/api/v1',
+    url: 'https://jsonplaceholder.typicode.com',
     options: {
         // Strip trailing slash from URL
         stripTrailingSlash: true,
