@@ -2,6 +2,14 @@ import {decamelize} from 'humps';
 
 import {InvalidConfigError} from './errors';
 
+/**
+ * API signature to quickly identify our actions
+ */
+export const API_SIGNATURE = Symbol('REDUX_CACHED_API');
+
+/**
+ * Request stages
+ */
 export const requestStages = {
     request: 'REQUEST',
     success: 'SUCCESS',

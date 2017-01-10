@@ -1,5 +1,6 @@
 import {InvalidConfigError, RequestError} from './errors';
 import {_makeApiRequest} from './request';
+import {API_SIGNATURE} from './types';
 
 /**
  * Create Redux middleware for one or more API's
@@ -49,6 +50,8 @@ export const createApiMiddleware = (...apis) => {
 
         // Generate dispatch action function (improves readability of the code below)
         const dispatchAction = ({type, isError = false, error = null, payload = null, hasPayloadError = false, payloadError = null}) => next({
+            signature: API_SIGNATURE,
+            api: apiName,
             type,
             isEntity,
             entity: entityName,

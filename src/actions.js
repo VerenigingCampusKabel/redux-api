@@ -1,4 +1,5 @@
 import {InvalidConfigError} from './errors';
+import {API_SIGNATURE} from './types';
 
 /**
  * Create an API endpoint action. (Internal function)
@@ -15,6 +16,7 @@ import {InvalidConfigError} from './errors';
  */
 export const _createApiAction = (apiName, isEntity, entityName, endpointName, types) => {
     return (payload) => ({
+        signature: API_SIGNATURE,
         api: apiName,
         type: types.request,
         isEntity,
