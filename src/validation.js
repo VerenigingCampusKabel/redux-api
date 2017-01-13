@@ -18,10 +18,10 @@ export const _validateEntity = (entity) => {
     // Find the entity name
     const key = entity.schema ? entity.schema.key : entity.name;
 
-    // Validate entity schema if available
-    if (entity.schema && !(entity.schema instanceof schema.Entity)) {
-        throw new InvalidConfigError(`Invalid entity schema for "${key}", should be an instance of "normalizr.schema.Entity"`);
-    }
+    // // Validate entity schema if available
+    // if (entity.schema && !(entity.schema instanceof schema.Entity)) {
+    //     throw new InvalidConfigError(`Invalid entity schema for "${key}", should be an instance of "normalizr.schema.Entity"`);
+    // }
 
     // Validate entity record
     // if (entity.record && !(entity.record instanceof Record)) {
