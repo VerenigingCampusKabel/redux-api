@@ -168,7 +168,7 @@ export const createApiMiddleware = (...apis) => {
             isError,
             error,
             payload: responsePayload,
-            hasPayloadError: responsePayloadError !== undefined || responsePayload !== null,
+            hasPayloadError: responsePayloadError !== undefined || responsePayloadError !== null,
             payloadError: responsePayloadError
         });
 
