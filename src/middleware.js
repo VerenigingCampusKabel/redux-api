@@ -29,6 +29,9 @@ export const createApiMiddleware = (...apis) => {
             return next(action);
         }
 
+        // Make sure the reducers receive the request action
+        next(action);
+
         // Look up required information
         const {api: apiName, isEntity, entity: entityName, endpoint: endpointName, requestPayload} = action;
         const api = apiLookup[apiName];
