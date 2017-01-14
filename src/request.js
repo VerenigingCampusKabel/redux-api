@@ -33,7 +33,7 @@ export const FETCH_BODY_TYPES = ['Blob', 'BufferSource', 'FormData', 'URLSearchP
  * @return {Promise} A promise resolving the response
  */
 export const _makeApiRequest = async (apiUrl, endpoint, endpointDefaults, defaults, payload,
-    {urlPrefix = '', urlPostfix = '', camelize, decamelize, bodyType}) => {
+    {urlPrefix = '', urlPostfix = '', camelize, decamelize, bodyType, information = null}) => {
     // Generate request options
     const options = {};
     try {
@@ -44,7 +44,7 @@ export const _makeApiRequest = async (apiUrl, endpoint, endpointDefaults, defaul
 
             if (propertyFunc) {
                 // Invoke the property function with the request payload
-                options[property] = propertyFunc(payload);
+                options[property] = propertyFunc(payload, information);
             }
         }
 

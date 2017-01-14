@@ -64,22 +64,24 @@ export const createApiMiddleware = (...apis) => {
             payloadError
         });
 
+        const information = {
+            api,
+            type: action.type,
+            isEntity,
+            entity,
+            entityName,
+            endpoint,
+            endpointName,
+            endpointDefaults,
+            requestPayload
+        };
+
         // Attempt to find bailout function on the endpoint or endpoint defaults
         const bailoutFunc = endpoint.bailout || endpointDefaults.bailout || api.defaults.bailout;
         if (bailoutFunc) {
             try {
                 // Invoke the bailout function with the relevant request information and Redux state
-                const bailoutPayload = await bailoutFunc({
-                    api,
-                    type: action.type,
-                    isEntity,
-                    entity,
-                    entityName,
-                    endpoint,
-                    endpointName,
-                    endpointDefaults,
-                    requestPayload
-                }, getState());
+                const bailoutPayload = await bailoutFunc(information, getState());
 
                 if (bailoutPayload !== undefined && bailoutPayload !== null && bailoutPayload !== false) {
                     // Dispatch success action
@@ -109,7 +111,8 @@ export const createApiMiddleware = (...apis) => {
                 urlPostfix: isEntity ? entity.urlPostfix : '',
                 camelize: api.options.camelize,
                 decamelize: api.options.decamelize,
-                bodyType: api.options.bodyType
+                bodyType: api.options.bodyType,
+                information
             });
         } catch (err) {
             // Dispatch failure action
@@ -142,17 +145,7 @@ export const createApiMiddleware = (...apis) => {
 
             if (payloadFunc) {
                 // Invoke payload/error function with the response and request information
-                responsePayload = await payloadFunc(response, {
-                    api,
-                    type: action.type,
-                    isEntity,
-                    entity,
-                    entityName,
-                    endpoint,
-                    endpointName,
-                    endpointDefaults,
-                    requestPayload
-                }, schema);
+                responsePayload = await payloadFunc(response, information, schema);
             }
         } catch (err) {
             // An error occurred while parsing the response (soft fail)
