@@ -71,5 +71,8 @@ export const createApiActions = (api) => {
     // Generate custom endpoint actions
     apiActions.endpoints = _createApiActions(api.name, false, null, api.endpoints, api.types.custom);
 
+    // Store the actions on the API object as well
+    api.actions = apiActions;
+
     return apiActions;
 };
