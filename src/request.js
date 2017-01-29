@@ -51,7 +51,7 @@ export const _makeApiRequest = async (apiUrl, endpoint, endpointDefaults, defaul
         // Construct final URL by joining all non-empty parts
         let url = [apiUrl, urlPrefix, options.url || '', urlPostfix].map((val) => {
             // Strip leading and trailing slashes
-            return val.substring(val.indexOf('/') === 0 ? 1 : 0, val.indexOf('/') === val.length - 1 ? val.length - 1 : val.length);
+            return val === '/' ? '' : val.substring(val.indexOf('/') === 0 ? 1 : 0, val.indexOf('/') === val.length - 1 ? val.length - 1 : val.length);
         }).filter((val) => val !== '').join('/');
 
         // Parse query
