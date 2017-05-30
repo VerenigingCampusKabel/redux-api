@@ -1,4 +1,4 @@
-import {Map} from 'immutable';
+import {Map, fromJS} from 'immutable';
 
 import {InvalidConfigError} from './errors';
 import {API_SIGNATURE} from './types';
@@ -7,9 +7,10 @@ import {API_SIGNATURE} from './types';
  * Create a Redux reducer for an API.
  *
  * @param {object} api API configuration
+ * @param {object} isImmutable Whether to convert payload data to an Immutable object
  * @return {function} The created Redux reducer
  */
-export const createApiReducer = (api) => {
+export const createApiReducer = (api, isImmutable = false) => {
     // Validate API configuration
     if (typeof api !== 'object') {
         throw new InvalidConfigError(`Invalid API configuration: ${api}`);
@@ -50,13 +51,13 @@ export const createApiReducer = (api) => {
                 return state
                     .setIn(['endpoints', action.endpoint, 'loading'], false)
                     .setIn(['endpoints', action.endpoint, 'finished'], true)
-                    .setIn(['endpoints', action.endpoint, 'data'], action.payload)
+                    .setIn(['endpoints', action.endpoint, 'data'], isImmutable ? fromJS(action.payload) : action.payload)
                     .setIn(['endpoints', action.endpoint, 'error'], action.payloadError);
             } else if (failureTypes.indexOf(action.type) !== -1) {
                 return state
                     .setIn(['endpoints', action.endpoint, 'loading'], false)
                     .setIn(['endpoints', action.endpoint, 'finished'], true)
-                    .setIn(['endpoints', action.endpoint, 'data'], action.payload)
+                    .setIn(['endpoints', action.endpoint, 'data'], isImmutable ? fromJS(action.payload) : action.payload)
                     .setIn(['endpoints', action.endpoint, 'error'], action.hasPayloadError ? action.payloadError : action.error);
             }
         }
