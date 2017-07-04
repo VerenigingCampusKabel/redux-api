@@ -1,7 +1,7 @@
 import {Map, fromJS} from 'immutable';
 
 import {InvalidConfigError} from './errors';
-import {API_SIGNATURE} from './types';
+import {API_SIGNATURE, RESET_ENDPOINT} from './types';
 
 /**
  * Create a Redux reducer for an API.
@@ -59,6 +59,12 @@ export const createApiReducer = (api, isImmutable = false) => {
                     .setIn(['endpoints', action.endpoint, 'finished'], true)
                     .setIn(['endpoints', action.endpoint, 'data'], isImmutable ? fromJS(action.payload) : action.payload)
                     .setIn(['endpoints', action.endpoint, 'error'], action.hasPayloadError ? action.payloadError : action.error);
+            } else if (action.type === RESET_ENDPOINT) {
+                return state
+                    .setIn(['endpoints', action.endpoint, 'loading'], false)
+                    .setIn(['endpoints', action.endpoint, 'finished'], false)
+                    .setIn(['endpoints', action.endpoint, 'data'], null)
+                    .setIn(['endpoints', action.endpoint, 'error'], null);
             }
         }
 

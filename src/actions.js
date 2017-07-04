@@ -1,5 +1,5 @@
 import {InvalidConfigError} from './errors';
-import {API_SIGNATURE} from './types';
+import {API_SIGNATURE, RESET_ENDPOINT} from './types';
 
 /**
  * Create an API endpoint action. (Internal function)
@@ -23,6 +23,21 @@ export const _createApiAction = (apiName, isEntity, entityName, endpointName, ty
         entity: entityName,
         endpoint: endpointName,
         requestPayload: payload
+    });
+};
+
+/**
+ * Create an API reset endpoint action. (Internal function)
+ *
+ * @param {string} apiName Name of the API
+ * @return {function} The created reset endpoint action
+ */
+export const _createApiResetAction = (apiName) => {
+    return (endpointName) => ({
+        signature: API_SIGNATURE,
+        api: apiName,
+        type: RESET_ENDPOINT,
+        endpoint: endpointName
     });
 };
 
@@ -70,6 +85,9 @@ export const createApiActions = (api) => {
 
     // Generate custom endpoint actions
     apiActions.endpoints = _createApiActions(api.name, false, null, api.endpoints, api.types.custom);
+
+    // Generate reset endpoint action
+    apiActions.resetEndpoint = _createApiResetAction(api.name);
 
     // Store the actions on the API object as well
     api.actions = apiActions;

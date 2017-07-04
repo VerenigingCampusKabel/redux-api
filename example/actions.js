@@ -10,7 +10,8 @@ const {
         users,
         devices
     },
-    endpoints
+    endpoints,
+    resetEndpoint
 } = actions;
 
 // Define custom model actions
@@ -21,6 +22,7 @@ users.customAction = () => ({
 // Export entity actions and endpoint actions
 export {
     endpoints as api,
+    resetEndpoint as apiResetEndpoint,
     users,
     devices
 };

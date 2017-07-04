@@ -133,3 +133,8 @@ export const createApiTypes = (...apis) => {
 
     return types;
 };
+
+/**
+* Action type for resetting an API endpoint
+*/
+export const RESET_ENDPOINT = Symbol('RESET_ENDPOINT');
