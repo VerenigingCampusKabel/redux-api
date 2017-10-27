@@ -95,14 +95,14 @@ export const createApiMiddleware = (...apis) => {
                 }
             } catch (err) {
                 // Dispatch failure action
-                dispatchAction({
+                const result = dispatchAction({
                     types: types.failure,
                     isError: true,
                     error: err
                 });
 
-                // Throw the error for the resulting promise
-                throw err;
+                // Return the failure action for the resulting promise
+                return result;
             }
         }
 
@@ -119,14 +119,14 @@ export const createApiMiddleware = (...apis) => {
             });
         } catch (err) {
             // Dispatch failure action
-            dispatchAction({
+            const result = dispatchAction({
                 type: types.failure,
                 isError: true,
                 error: err
             });
 
-            // Throw the error for the resulting promise
-            throw err;
+            // Return the failure action for the resulting promise
+            return result;
         }
 
         // The server responded with a status code outside the 200-399 range (i.e. error)
@@ -168,12 +168,7 @@ export const createApiMiddleware = (...apis) => {
             payloadError: responsePayloadError
         });
 
-        if (isError) {
-            // Throw the error for the resulting promise
-            throw error;
-        } else {
-            // Return the result for the resulting promise
-            return result;
-        }
+        // Return the success/failure action for the resulting promise
+        return result;
     };
 };
