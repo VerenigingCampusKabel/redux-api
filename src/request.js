@@ -1,7 +1,7 @@
 import humps from 'humps';
 import fetch from 'isomorphic-fetch';
 
-import {toQueryString} from './util';
+import {determineObjectType, toQueryString} from './util';
 import {VALID_REQUEST_PROPERTIES} from './validation';
 
 /**
@@ -73,7 +73,7 @@ export const _makeApiRequest = async (apiUrl, endpoint, endpointDefaults, defaul
         // Parse request body
         if (options.body) {
             // Check if it's not a Fetch API supported object already
-            if (typeof options.body === 'object' && FETCH_BODY_TYPES.indexOf(options.body[Symbol.toStringTag]) === -1) {
+            if (typeof options.body === 'object' && FETCH_BODY_TYPES.indexOf(determineObjectType(options.body)) === -1) {
                 // Check for camelize options
                 if (camelize && camelize.body) {
                     options.body = humps.camelizeKeys(options.body);

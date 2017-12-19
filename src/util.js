@@ -5,6 +5,20 @@ import qs from 'qs';
 import {InternalError} from './errors';
 
 /**
+ * Determine the type of a JavaScript object.
+ *
+ * @param {object} obj Input object
+ * @return {string} Type of the JavaScript object
+ */
+export const determineObjectType = (obj) => {
+    if (obj[Symbol.toStringTag]) {
+        return obj[Symbol.toStringTag];
+    }
+    const str = obj.toString();
+    return str.substring(8, str.length - 1);
+};
+
+/**
  * Normalizes a configuration object by converting all propert values to functions.
  *
  * @param {object} config A configuration object
