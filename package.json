@@ -1,5 +1,5 @@
 {
-  "name": "redux-cached-api",
+  "name": "rdx-api",
   "description": "Redux middleware for calling and caching a (REST) API",
   "version": "2.0.2",
   "license": "MIT",

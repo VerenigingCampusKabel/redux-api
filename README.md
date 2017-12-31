@@ -4,7 +4,7 @@ Redux middleware for calling and caching a (REST) API.
 
 ## Installation
 ```
-$ yarn add redux-cached-api
+$ yarn add rdx-api
 ```
 
 ## Usage
@@ -12,8 +12,8 @@ $ yarn add redux-cached-api
 
 ## Contributing
 ```
-$ git clone https://github.com/VerenigingCampusKabel/redux-cached-api
-$ cd redux-cached-api
+$ git clone https://github.com/VerenigingCampusKabel/redux-api
+$ cd redux-api
 $ yarn install
 ```
 
