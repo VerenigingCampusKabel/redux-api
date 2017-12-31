@@ -7,10 +7,10 @@
   "contributors": [
     "Daniel Huisman <daniel@huisman.me> (https://danielhuisman.io)"
   ],
-  "repository": "github:VerenigingCampusKabel/redux-cached-api",
-  "homepage": "https://github.com/VerenigingCampusKabel/redux-cached-api",
+  "repository": "github:VerenigingCampusKabel/redux-api",
+  "homepage": "https://github.com/VerenigingCampusKabel/redux-api",
   "bugs": {
-    "url": "https://github.com/VerenigingCampusKabel/redux-cached-api/issues",
+    "url": "https://github.com/VerenigingCampusKabel/redux-api/issues",
     "email": "info@vck.tv"
   },
   "keywords": [

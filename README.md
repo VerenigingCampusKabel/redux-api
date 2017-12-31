@@ -1,4 +1,4 @@
-# redux-cached-api
+# redux-api
 
 Redux middleware for calling and caching a (REST) API.
 
