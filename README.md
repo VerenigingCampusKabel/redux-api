@@ -8,7 +8,11 @@ $ yarn add rdx-api
 ```
 
 ## Usage
-*Work in progress*
+See the [documentation directory](docs) for the usage and more in depth documentation.
+*The documentation is still somewhat incomplete, but the example should help you understand the basic concepts.*
+
+## Example
+See the [example directory](example) for a basic example.
 
 ## Contributing
 ```
