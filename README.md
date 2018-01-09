@@ -1,5 +1,7 @@
 # redux-api
 
+[![rdx-api](https://img.shields.io/npm/v/rdx-api.svg)](https://www.npmjs.com/package/rdx-api)
+
 Redux middleware for calling a (REST) API.
 
 ## Installation
