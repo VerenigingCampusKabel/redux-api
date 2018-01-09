@@ -1,6 +1,6 @@
 {
   "name": "rdx-api",
-  "description": "Redux middleware for calling and caching a (REST) API",
+  "description": "Redux middleware for calling a (REST) API.",
   "version": "2.0.4",
   "license": "MIT",
   "author": "Vereniging Campus Kabel <info@vck.tv> (https://vck.tv)",
@@ -16,7 +16,6 @@
   "keywords": [
     "redux",
     "api",
-    "cache",
     "middleware",
     "flux",
     "rest"

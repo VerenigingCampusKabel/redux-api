@@ -1,6 +1,6 @@
 # redux-api
 
-Redux middleware for calling and caching a (REST) API.
+Redux middleware for calling a (REST) API.
 
 ## Installation
 ```
