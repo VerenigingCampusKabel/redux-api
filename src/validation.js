@@ -1,6 +1,3 @@
-import {schema} from 'normalizr';
-// import {Record} from 'immutable';
-
 import {InvalidConfigError} from './errors';
 
 /**
@@ -10,32 +7,19 @@ import {InvalidConfigError} from './errors';
  * @throws {InvalidConfigError}
  */
 export const _validateEntity = (entity) => {
-    // Validate entity name or schema
-    if (!entity.name && !entity.schema) {
-        throw new InvalidConfigError(`Missing entity name or schema`);
+    // Validate entity name
+    if (!entity.name) {
+        throw new InvalidConfigError(`Missing entity name`);
     }
-
-    // Find the entity name
-    const key = entity.schema ? entity.schema.key : entity.name;
-
-    // // Validate entity schema if available
-    // if (entity.schema && !(entity.schema instanceof schema.Entity)) {
-    //     throw new InvalidConfigError(`Invalid entity schema for "${key}", should be an instance of "normalizr.schema.Entity"`);
-    // }
-
-    // Validate entity record
-    // if (entity.record && !(entity.record instanceof Record)) {
-    //     throw new InvalidConfigError(`Invalid entity record for "${key}", should be an instance of "immutable.Record"`);
-    // }
 
     // Validate url prefix
     if (entity.urlPrefix && typeof entity.urlPrefix !== 'string') {
-        throw new InvalidConfigError(`Invalid entity url prefix for "${key}", should be a string`);
+        throw new InvalidConfigError(`Invalid entity url prefix for "${entity.name}", should be a string`);
     }
 
     // Validate url postfix
     if (entity.urlPostfix && typeof entity.urlPostfix !== 'string') {
-        throw new InvalidConfigError(`Invalid entity url postfix for "${key}", should be a string`);
+        throw new InvalidConfigError(`Invalid entity url postfix for "${entity.name}", should be a string`);
     }
 };
 
@@ -47,7 +31,7 @@ export const VALID_REQUEST_PROPERTIES = ['url', 'method', 'headers', 'query', 'b
 /**
  * List of valid redux-cached-api response properties.
  */
-export const VALID_RESPONSE_PROPERTIES = ['bailout', 'payload', 'error', 'schema'];
+export const VALID_RESPONSE_PROPERTIES = ['bailout', 'payload', 'error'];
 
 /**
  * Validate an API request configuration. (Internal function)

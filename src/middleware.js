@@ -138,17 +138,9 @@ export const createApiMiddleware = (...apis) => {
             const payloadFunc = isError ? endpoint.error || endpointDefaults.error || api.defaults.error :
                 endpoint.payload || endpointDefaults.payload || api.defaults.error;
 
-            // Attempt to find a schema function
-            let schema = null;
-            const schemaFunc = isError ? null : endpoint.schema || endpointDefaults.schema || api.defaults.schema;
-            if (schemaFunc) {
-                // Invoke the property function with the entity schema
-                schema = schemaFunc(isEntity ? entity.schema : null);
-            }
-
             if (payloadFunc) {
                 // Invoke payload/error function with the response and request information
-                responsePayload = await payloadFunc(response, information, schema);
+                responsePayload = await payloadFunc(response, information);
             }
         } catch (err) {
             // An error occurred while parsing the response (soft fail)

@@ -1,5 +1,4 @@
 import humps from 'humps';
-import {normalize} from 'normalizr';
 import qs from 'qs';
 
 import {InternalError} from './errors';
@@ -57,10 +56,9 @@ export const HTTP_STATUS_EMPTY = [204, 205];
  * @param {Response} response A Fetch API response
  * @param {object} request Object containing request information
  * @param {object} request.api API configuration
- * @param {object} schema A normalizr schema to use for parsing the data or null
  * @return {Promise} A promise resolving the parsed JSON or null
  */
-export const getJSON = async (response, {api}, schema = null) => {
+export const getJSON = async (response, {api}) => {
     if (!response) {
         throw new InternalError('No response object passed to getJSON');
     }
@@ -81,11 +79,6 @@ export const getJSON = async (response, {api}, schema = null) => {
     // Check for decamelize options
     if (api.options.decamelize && api.options.decamelize.response) {
         data = humps.decamelizeKeys(data);
-    }
-
-    // Parse the data using normalizr
-    if (schema) {
-        data = normalize(data, schema);
     }
 
     return data;

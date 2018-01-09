@@ -18,7 +18,6 @@ export const createApiReducer = (api, isImmutable = false) => {
 
     // Gather relevant information
     const {
-        // entityReducer: options,
         mergedTypes: {
             request: requestTypes,
             success: successTypes,

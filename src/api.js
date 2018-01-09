@@ -46,11 +46,6 @@ export const createApi = (config) => {
 
     // Normalize entites
     Object.values(entities).forEach((entity) => {
-        // Define entity name
-        if (!entity.name) {
-            entity.name = entity.schema.key;
-        }
-
         // Normalize url prefix and postfix
         entity.urlPrefix = entity.urlPrefix || '';
         entity.urlPostfix = entity.urlPostfix || '';

@@ -5,7 +5,6 @@ import * as entities from './entities';
 // Define API
 export default createApi({
     name: 'EXAMPLE_API',
-    // url: 'https://api.example.com/api/v1',
     url: 'https://jsonplaceholder.typicode.com',
     options: {
         // Strip trailing slash from URL
@@ -47,23 +46,19 @@ export default createApi({
     entityEndpoints: {
         getAll: {
             url: '/',
-            method: 'GET',
-            schema: (entitySchema) => [entitySchema]
+            method: 'GET'
         },
         createSingle: {
             url: '/',
-            method: 'POST',
-            schema: (entitySchema) => entitySchema
+            method: 'POST'
         },
         getSingle: {
             url: (payload) => `/${payload.id}`,
-            method: 'GET',
-            schema: (entitySchema) => entitySchema
+            method: 'GET'
         },
         updateSingle: {
             url: (payload) => `/${payload.id}`,
-            method: 'PUT',
-            schema: (entitySchema) => entitySchema
+            method: 'PUT'
         },
         deleteSingle: {
             url: (payload) => `/${payload.id}`,
