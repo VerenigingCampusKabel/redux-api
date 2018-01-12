@@ -15,14 +15,15 @@ import {API_SIGNATURE, RESET_ENDPOINT} from './types';
  * @return {function} The created endpoint action
  */
 export const _createApiAction = (apiName, isEntity, entityName, endpointName, types) => {
-    return (payload) => ({
+    return (payload, extra = {}) => ({
         signature: API_SIGNATURE,
         api: apiName,
         type: types.request,
         isEntity,
         entity: entityName,
         endpoint: endpointName,
-        requestPayload: payload
+        requestPayload: payload,
+        ...extra
     });
 };
 
@@ -33,11 +34,12 @@ export const _createApiAction = (apiName, isEntity, entityName, endpointName, ty
  * @return {function} The created reset endpoint action
  */
 export const _createApiResetAction = (apiName) => {
-    return (endpointName) => ({
+    return (endpointName, extra = {}) => ({
         signature: API_SIGNATURE,
         api: apiName,
         type: RESET_ENDPOINT,
-        endpoint: endpointName
+        endpoint: endpointName,
+        ...extra
     });
 };
 
