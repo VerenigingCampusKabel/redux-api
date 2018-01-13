@@ -1,11 +1,11 @@
 export const users = {
-    name: 'user',
+    name: 'users',
     urlPrefix: '/users',
     urlPostfix: ''
 };
 
 export const posts = {
-    name: 'post',
+    name: 'posts',
     urlPrefix: '/posts',
     urlPostfix: ''
 };
