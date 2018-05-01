@@ -14,9 +14,6 @@
             "modules": true
         }
     },
-    "ecmaFeatures": {
-        "modules": true
-    },
     "rules": {
         "strict": 0,
         "max-len": [2, 160, 4],
