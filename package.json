@@ -1,7 +1,7 @@
 {
   "name": "rdx-api",
   "description": "Redux middleware for calling a (REST) API.",
-  "version": "2.0.6",
+  "version": "2.0.7",
   "license": "MIT",
   "author": "Vereniging Campus Kabel <info@vck.tv> (https://vck.tv)",
   "contributors": [
