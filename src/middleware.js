@@ -64,7 +64,8 @@ export const createApiMiddleware = (...apis) => {
             error,
             payload,
             hasPayloadError,
-            payloadError
+            payloadError,
+            extra: action.extra
         });
 
         const information = {
@@ -76,7 +77,8 @@ export const createApiMiddleware = (...apis) => {
             endpoint,
             endpointName,
             endpointDefaults,
-            requestPayload
+            requestPayload,
+            extra: action.extra
         };
 
         // Attempt to find bailout function on the endpoint or endpoint defaults

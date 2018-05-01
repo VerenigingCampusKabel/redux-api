@@ -23,7 +23,7 @@ export const _createApiAction = (apiName, isEntity, entityName, endpointName, ty
         entity: entityName,
         endpoint: endpointName,
         requestPayload: payload,
-        ...extra
+        extra
     });
 };
 
@@ -39,7 +39,7 @@ export const _createApiResetAction = (apiName) => {
         api: apiName,
         type: RESET_ENDPOINT,
         endpoint: endpointName,
-        ...extra
+        extra
     });
 };
 
